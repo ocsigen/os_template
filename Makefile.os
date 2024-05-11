@@ -56,11 +56,27 @@ test.opt:: opt | $(addprefix $(TEST_PREFIX),$(DIST_DIRS)) staticfiles
 	@echo "==== The website is available at http://localhost:$(TEST_PORT) ===="
 	$(OCSIGENSERVER.OPT) $(RUN_DEBUG) -c $(patsubst %.conf.in,$(TEST_PREFIX)$(ETCDIR)/%-test.conf,$(CONF_IN))
 
+test.static.byte: static.byte
+	@echo "==== The website is available at http://localhost:$(TEST_PORT) ===="
+	dune exec ./project_name_main.bc
+test.static.opt: static.opt
+	@echo "==== The website is available at http://localhost:$(TEST_PORT) ===="
+	dune exec ./project_name_main.exe
+
 $(addprefix $(TEST_PREFIX), $(DIST_DIRS)):
 	mkdir -p $@
 
 staticfiles:
 	cp -rf $(LOCAL_STATIC_CSS) $(LOCAL_STATIC_IMAGES) $(LOCAL_STATIC_FONTS) $(TEST_PREFIX)$(ELIOMSTATICDIR)
+
+##----------------------------------------------------------------------
+## Static executable
+
+static.byte: byte project_name_main.eliom
+	dune build project_name_main.bc
+
+static.opt: opt project_name_main.eliom
+	dune build project_name_main.exe
 
 ##----------------------------------------------------------------------
 ## Installing & Running

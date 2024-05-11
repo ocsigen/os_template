@@ -1,9 +1,31 @@
+(include dune.config)
 (dirs tools client assets)
 
-(executables
-    (names project_name)
-    (modes (byte plugin) (native plugin))
+(library
+    (name project_name)
+    (modules (:standard \ Project_name_main))
     (libraries eliom.server ocsigen-start.server ocsipersist.pgsql)
+    (library_flags (:standard -linkall))
+    (wrapped false)
+    (preprocess
+       (pps
+           lwt_ppx
+           pgocaml_ppx
+           js_of_ocaml-ppx_deriving_json
+           ocsigen-i18n
+           ocsigen-ppx-rpc
+           eliom.ppx.server
+           -- --prefix Project_name_ --suffix _i18n --default-module Project_name_i18n
+       )
+    )
+  )
+
+(executables
+    (names project_name_main)
+    (public_names project_name)
+    (modes (byte exe) (native exe))
+    (libraries eliom.server ocsigen-start.server ocsipersist.pgsql ocsigenserver.ext.staticmod project_name)
+    (modules Project_name_main)
     (preprocess
        (pps
            lwt_ppx
@@ -32,7 +54,6 @@
         (run ocsigen-i18n-generator --primary project_name_i18n.tsv --languages en,fr --default-language fr)))))
 
 (rule (alias project_name)
-   (deps project_name.cma client/project_name.bc client/project_name.bc.js tools/check_modules.ml)
-   (action (run ocaml tools/check_modules.ml project_name)))
-
-(env (_ (flags (:standard -w -9-37-39))))
+   (deps project_name.cma client/project_name.bc client/project_name.bc.js tools/check_modules.ml 
+         client/dune.client)
+   (action (run ocaml -I +unix -I +str tools/check_modules.ml project_name)))

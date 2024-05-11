@@ -95,8 +95,10 @@ module Demo_timepicker = Demo_timepicker
 module Demo_tips = Demo_tips
 module Demo_tongue = Demo_tongue
 module Demo_users = Demo_users
+module Project_name_config = Project_name_config
 
 [%%client.start]
 
-module Project_name_config = Project_name_config
 module Project_name_language = Project_name_language
+module Project_name_mobile = Project_name_mobile
+module Project_name_phone_connect = Project_name_phone_connect
