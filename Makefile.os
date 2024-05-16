@@ -171,7 +171,7 @@ $(TEST_CONFIG_FILES): $(TEST_PREFIX)$(ETCDIR)/%-test.conf: %.conf.in $(JS_AND_CS
 ##----------------------------------------------------------------------
 ## Compilation
 
-.PHONY: gen-dune config-files
+.PHONY: config-files
 
 config-files: | $(TEST_PREFIX)$(ELIOMSTATICDIR) $(TEST_PREFIX)$(LIBDIR)
 	HASH=`md5sum _build/default/client/$(PROJECT_NAME).bc.js | cut -d ' ' -f 1` && \
@@ -180,19 +180,16 @@ config-files: | $(TEST_PREFIX)$(ELIOMSTATICDIR) $(TEST_PREFIX)$(LIBDIR)
 	cp -f _build/default/$(PROJECT_NAME).cm* $(TEST_PREFIX)$(LIBDIR)/
 	$(MAKE) $(CONFIG_FILES) $(TEST_CONFIG_FILES) PROJECT_NAME=$(PROJECT_NAME)
 
-all:: gen-dune
+all::
 	$(ENV_PSQL) dune build $(DUNE_OPTIONS) @install @$(PROJECT_NAME) $(PROJECT_NAME).cmxs
 
-byte:: gen-dune
+byte::
 	$(ENV_PSQL) dune build $(DUNE_OPTIONS) @$(PROJECT_NAME)
 	make config-files PROJECT_NAME=$(PROJECT_NAME)
 
-opt:: gen-dune
+opt::
 	$(ENV_PSQL) dune build $(DUNE_OPTIONS) $(PROJECT_NAME).cmxs @$(PROJECT_NAME)
 	make config-files PROJECT_NAME=$(PROJECT_NAME)
-
-gen-dune:
-	@ocaml tools/gen_dune.ml > client/dune.client
 
 ##----------------------------------------------------------------------
 
