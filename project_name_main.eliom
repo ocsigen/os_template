@@ -12,8 +12,6 @@ let%server _ =
   Ocsigen_config.set_usedefaulthostname true;
   Ocsigen_config.set_debugmode true;
   Ocsigen_config.set_command_pipe "local/var/run/project_name-cmd";
-  Project_name_config.app_name := "%%APPNAME%%";
-  Project_name_config.css_name := "%%CSSNAME%%";
   Ocsigen_server.start
     [ Ocsigen_server.host
         [Staticmod.run ~dir:"local/var/www/project_name" (); Eliom.run ()] ]

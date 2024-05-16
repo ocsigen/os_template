@@ -72,10 +72,10 @@ staticfiles:
 ##----------------------------------------------------------------------
 ## Static executable
 
-static.byte: byte project_name_main.eliom
+static.byte: byte
 	dune build project_name_main.bc
 
-static.opt: opt project_name_main.eliom
+static.opt: opt
 	dune build project_name_main.exe
 
 ##----------------------------------------------------------------------

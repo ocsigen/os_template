@@ -1,0 +1,26 @@
+(* Set static configuration in case you are using static linking only.
+   These information are taken from the config file otherwise.
+*)
+let%server set_static_config () =
+  if not (Ocsigen_config.has_configuration_file ())
+  then begin
+    Ocsigen_config.set_ports [`All, 8080];
+    Ocsigen_config.set_veryverbose ();
+    Ocsigen_config.set_logdir "local/var/log/project_name";
+    Ocsigen_config.set_datadir "local/var/data/project_name";
+    Ocsigen_config.set_uploaddir (Some "/tmp");
+    Ocsigen_config.set_usedefaulthostname true;
+    Ocsigen_config.set_debugmode true;
+    Ocsigen_config.set_command_pipe "local/var/run/project_name-cmd";
+    Project_name_config.os_db_database := Some "%%PGDATABASE%%";
+    Project_name_config.os_db_host := Some "%%PGHOST%%";
+    Project_name_config.os_db_user :=
+      (let u = "%%PGUSER%%" in if u = "" then None else Some u);
+    Project_name_config.os_db_password := Some "%%PGPASSWORD%%";
+    Project_name_config.os_db_port := Some %%PGPORT%%;
+    Project_name_config.app_name := 
+      Filename.chop_suffix
+        (Unix.readlink "local/var/www/project_name/project_name.js") ".js" ;
+    Project_name_config.css_name :=
+      Unix.readlink "local/var/www/project_name/css/project_name.css";
+  end

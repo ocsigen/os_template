@@ -1,5 +1,5 @@
 (include dune.config)
-(dirs tools client gen assets)
+(dirs tools client gen assets static local)
 
 (library
     (name project_name)
@@ -52,6 +52,19 @@
     (with-stdout-to %{target}
       (with-stdin-from %{deps}
         (run ocsigen-i18n-generator --primary project_name_i18n.tsv --languages en,fr --default-language fr)))))
+
+(rule
+  (target project_name_static_config.eliom)
+  (deps project_name_static_config.eliom.in)
+  (action
+    (with-stdout-to %{target}
+      (with-stdin-from project_name_static_config.eliom.in
+            (run sed -e "s/%%PGPORT%%/%{env:PGPORT=3000}/"
+                     -e "s/%%PGDATABASE%%/%{env:PGDATABASE=project_name}/"
+                     -e "s/%%PGDATABASE%%/%{env:PGDATABASE=project_name}/"
+                     -e "s/%%PGHOST%%/%{env:PGHOST=project_name}/"
+                     -e "s/%%PGUSER%%/%{env:PGUSER=}/"
+                     -e "s/%%PGPASSWORD%%/%{env:PGPASSWORD=project_name}/")))))
 
 (subdir gen
   (rule
