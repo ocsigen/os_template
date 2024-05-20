@@ -6,7 +6,7 @@
  (name project_name)
  (modules
   (:standard \ Project_name_main))
- (libraries eliom.server ocsigen-start.server ocsipersist)
+ (libraries eliom.server ocsigen-start.server ocsipersist-pgsql ocsipersist-pgsql.settings)
  (library_flags
   (:standard -linkall))
  (wrapped false)
@@ -35,7 +35,7 @@
  (libraries
   eliom.server
   ocsigen-start.server
-  ocsipersist.pgsql
+  ocsipersist-pgsql
   ocsigenserver.ext.staticmod
   project_name)
  (modules Project_name_main)
