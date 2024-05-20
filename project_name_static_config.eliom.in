@@ -12,6 +12,10 @@ let%server set_static_config () =
     Ocsigen_config.set_usedefaulthostname true;
     Ocsigen_config.set_debugmode true;
     Ocsigen_config.set_command_pipe "local/var/run/project_name-cmd";
+    Ocsipersist_settings.set_host "%%PGHOST%%";
+    Ocsipersist_settings.set_port %%PGPORT%%;
+    Ocsipersist_settings.set_database "ocsipersist_project_name";
+    Ocsipersist.init ();
     Project_name_config.os_db_database := Some "%%PGDATABASE%%";
     Project_name_config.os_db_host := Some "%%PGHOST%%";
     Project_name_config.os_db_user :=

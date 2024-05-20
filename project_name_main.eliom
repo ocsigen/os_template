@@ -1,7 +1,7 @@
 (** This is the main file if you are using static linking without config file.
     It is not used if you are using a config file ans ocsigenserver *)
 
-module%shared Project_name= Project_name
+module%shared Project_name = Project_name
 
 let%server _ =
   Ocsigen_config.set_ports [`All, 8080];
