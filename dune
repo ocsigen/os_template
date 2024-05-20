@@ -1,98 +1,167 @@
 (include dune.config)
+
 (dirs tools client gen assets static local)
 
 (library
-    (name project_name)
-    (modules (:standard \ Project_name_main))
-    (libraries eliom.server ocsigen-start.server ocsipersist.pgsql)
-    (library_flags (:standard -linkall))
-    (wrapped false)
-    (preprocess
-       (pps
-           lwt_ppx
-           pgocaml_ppx
-           js_of_ocaml-ppx_deriving_json
-           ocsigen-i18n
-           ocsigen-ppx-rpc
-           eliom.ppx.server
-           -- --prefix Project_name_ --suffix _i18n --default-module Project_name_i18n
-       )
-    )
-  )
+ (name project_name)
+ (modules
+  (:standard \ Project_name_main))
+ (libraries eliom.server ocsigen-start.server ocsipersist)
+ (library_flags
+  (:standard -linkall))
+ (wrapped false)
+ (preprocess
+  (pps
+   lwt_ppx
+   pgocaml_ppx
+   js_of_ocaml-ppx_deriving_json
+   ocsigen-i18n
+   ocsigen-ppx-rpc
+   eliom.ppx.server
+   --
+   --prefix
+   Project_name_
+   --suffix
+   _i18n
+   --default-module
+   Project_name_i18n)))
 
 (executables
-    (names project_name_main)
-    (public_names project_name)
-    (modes (byte exe) (native exe))
-    (libraries eliom.server ocsigen-start.server ocsipersist.pgsql ocsigenserver.ext.staticmod project_name)
-    (modules Project_name_main)
-    (preprocess
-       (pps
-           lwt_ppx
-           pgocaml_ppx
-           js_of_ocaml-ppx_deriving_json
-           ocsigen-i18n
-           ocsigen-ppx-rpc
-           eliom.ppx.server
-           -- --prefix Project_name_ --suffix _i18n --default-module Project_name_i18n
-       )
-    )
-  )
-
-(rule (target project_name_i18n.eliom) (deps assets/project_name_i18n.tsv)
-  (action
-    (with-stdout-to %{target}
-      (with-stdin-from %{deps}
-        (pipe-stdout
-          (run ocsigen-i18n-generator --languages en,fr --default-language fr %{deps})
-          (run sed "1 s/]/[@@deriving json]]\\n[%%shared [@@@ocaml.warning\"-27\"]]/"))))))
-
-(rule (target project_name_Demo_i18n.eliom) (deps assets/project_name_Demo_i18n.tsv)
-  (action
-    (with-stdout-to %{target}
-      (with-stdin-from %{deps}
-        (run ocsigen-i18n-generator --primary project_name_i18n.tsv --languages en,fr --default-language fr)))))
+ (names project_name_main)
+ (public_names project_name)
+ (modes
+  (byte exe)
+  (native exe))
+ (libraries
+  eliom.server
+  ocsigen-start.server
+  ocsipersist.pgsql
+  ocsigenserver.ext.staticmod
+  project_name)
+ (modules Project_name_main)
+ (preprocess
+  (pps
+   lwt_ppx
+   pgocaml_ppx
+   js_of_ocaml-ppx_deriving_json
+   ocsigen-i18n
+   ocsigen-ppx-rpc
+   eliom.ppx.server
+   --
+   --prefix
+   Project_name_
+   --suffix
+   _i18n
+   --default-module
+   Project_name_i18n)))
 
 (rule
-  (target project_name_static_config.eliom)
-  (deps project_name_static_config.eliom.in)
+ (target project_name_i18n.eliom)
+ (deps assets/project_name_i18n.tsv)
+ (action
+  (with-stdout-to
+   %{target}
+   (with-stdin-from
+    %{deps}
+    (pipe-stdout
+     (run
+      ocsigen-i18n-generator
+      --languages
+      en,fr
+      --default-language
+      fr
+      %{deps})
+     (run
+      sed
+      "1 s/]/[@@deriving json]]\\n[%%shared [@@@ocaml.warning\"-27\"]]/"))))))
+
+(rule
+ (target project_name_Demo_i18n.eliom)
+ (deps assets/project_name_Demo_i18n.tsv)
+ (action
+  (with-stdout-to
+   %{target}
+   (with-stdin-from
+    %{deps}
+    (run
+     ocsigen-i18n-generator
+     --primary
+     project_name_i18n.tsv
+     --languages
+     en,fr
+     --default-language
+     fr)))))
+
+(rule
+ (target project_name_static_config.eliom)
+ (deps project_name_static_config.eliom.in)
+ (action
+  (with-stdout-to
+   %{target}
+   (with-stdin-from
+    project_name_static_config.eliom.in
+    (run
+     sed
+     -e
+     "s/%%PGPORT%%/%{env:PGPORT=3000}/"
+     -e
+     "s/%%PGDATABASE%%/%{env:PGDATABASE=project_name}/"
+     -e
+     "s/%%PGDATABASE%%/%{env:PGDATABASE=project_name}/"
+     -e
+     "s/%%PGHOST%%/%{env:PGHOST=project_name}/"
+     -e
+     "s/%%PGUSER%%/%{env:PGUSER=}/"
+     -e
+     "s/%%PGPASSWORD%%/%{env:PGPASSWORD=project_name}/")))))
+
+(subdir
+ gen
+ (rule
+  (deps ../tools/gen_dune.ml)
   (action
-    (with-stdout-to %{target}
-      (with-stdin-from project_name_static_config.eliom.in
-            (run sed -e "s/%%PGPORT%%/%{env:PGPORT=3000}/"
-                     -e "s/%%PGDATABASE%%/%{env:PGDATABASE=project_name}/"
-                     -e "s/%%PGDATABASE%%/%{env:PGDATABASE=project_name}/"
-                     -e "s/%%PGHOST%%/%{env:PGHOST=project_name}/"
-                     -e "s/%%PGUSER%%/%{env:PGUSER=}/"
-                     -e "s/%%PGPASSWORD%%/%{env:PGPASSWORD=project_name}/")))))
+   (with-stdout-to
+    dune.client
+    (run ocaml ../tools/gen_dune.ml)))))
 
-(subdir gen
-  (rule
-    (deps ../tools/gen_dune.ml)
-    (action
-      (with-stdout-to dune.client
-        (run ocaml ../tools/gen_dune.ml)))))
-
-(subdir client
-  (executables
-      (names project_name)
-      (modes js byte)
-      (preprocess
-          (pps
-              js_of_ocaml-ppx
-              lwt_ppx
-              ocsigen-i18n
-              -- --prefix Project_name_ --suffix _i18n --default-module Project_name_i18n
-          )
-      )
-      (js_of_ocaml
-          (build_runtime_flags :standard --enable use-js-string)
-          (flags :standard --enable with-js-error --enable use-js-string
-                 --no-source-map)) ; source maps are slow...
-      (libraries eliom.client ocsigen-start.client))
-  (dynamic_include ../gen/dune.client))
+(subdir
+ client
+ (executables
+  (names project_name)
+  (modes js byte)
+  (preprocess
+   (pps
+    js_of_ocaml-ppx
+    lwt_ppx
+    ocsigen-i18n
+    --
+    --prefix
+    Project_name_
+    --suffix
+    _i18n
+    --default-module
+    Project_name_i18n))
+  (js_of_ocaml
+   (build_runtime_flags :standard --enable use-js-string)
+   (flags
+    :standard
+    --enable
+    with-js-error
+    --enable
+    use-js-string
+    --no-source-map))
+  ; source maps are slow...
+  (libraries eliom.client ocsigen-start.client))
+ (dynamic_include ../gen/dune.client))
 
 ; Main rule:
-(rule (alias project_name)
-   (deps project_name.cma client/project_name.bc client/project_name.bc.js tools/check_modules.ml)
-   (action (run ocaml -I +unix -I +str tools/check_modules.ml project_name)))
+
+(rule
+ (alias project_name)
+ (deps
+  project_name.cma
+  client/project_name.bc
+  client/project_name.bc.js
+  tools/check_modules.ml)
+ (action
+  (run ocaml -I +unix -I +str tools/check_modules.ml project_name)))
