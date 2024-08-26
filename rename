@@ -1,0 +1,8 @@
+rm -rf dest
+mkdir -p dest
+find . -type d \( -path ./local_db -o -path ./.git \) -prune -false -o -type f | while read i ; do cp $i dest/`echo ${i/.\//} | sed 's/\//!/g'` ; done
+cd dest
+sed -i s/project_name/%%%PROJECT_NAME%%%/g *
+sed -i s/Project_name/%%%MODULE_NAME%%%/g *
+for i in *project_name* ; do mv $i ${i/project_name/PROJECT_NAME}; done
+cd ..
