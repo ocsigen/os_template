@@ -6,12 +6,13 @@ let%server set_static_config () =
   then begin
     Ocsigen_config.set_ports [`All, 8080];
     Ocsigen_config.set_veryverbose ();
+    Ocsigen_config.set_debugmode true;
     Ocsigen_config.set_logdir "local/var/log/project_name";
     Ocsigen_config.set_datadir "local/var/data/project_name";
     Ocsigen_config.set_uploaddir (Some "/tmp");
     Ocsigen_config.set_usedefaulthostname true;
-    Ocsigen_config.set_debugmode true;
     Ocsigen_config.set_command_pipe "local/var/run/project_name-cmd";
+    Ocsigen_config.set_default_charset (Some "utf-8");
     Ocsipersist_settings.set_host "%%PGHOST%%";
     Ocsipersist_settings.set_port %%PGPORT%%;
     Ocsipersist_settings.set_database "ocsipersist_project_name";
