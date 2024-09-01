@@ -27,7 +27,7 @@ USE_NPM               := yes
 ## The following part contains the configuration for the ocsigenserver.
 
 # Port for running the server (make run.*)
-PORT                  := 80
+PORT                  := 8080
 
 # Port for testing (make test.*)
 TEST_PORT             := 8080

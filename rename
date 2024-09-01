@@ -1,6 +1,6 @@
 rm -rf dest
 mkdir -p dest
-find . -type d \( -path ./local_db -o -path ./.git -o -path ./local -o -path ./_build \) -prune -false -o -type f | while read i ; do cp $i dest/`echo ${i/.\//} | sed 's/\//!/g'` ; done
+find . -type d \( -path ./node_modules -o -path ./local_db -o -path ./.git -o -path ./local -o -path ./_build \) -prune -false -o -type f | while read i ; do cp $i dest/`echo ${i/.\//} | sed 's/\//!/g'` ; done
 cd dest
 rm -f rename
 sed -i s/project_name/%%%PROJECT_NAME%%%/g *

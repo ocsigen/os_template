@@ -47,7 +47,7 @@ all byte opt:: ${VOLATILE_SCHEMA}
 
 DIST_FILES = $(ELIOMSTATICDIR)/$(PROJECT_NAME).js $(LIBDIR)/$(PROJECT_NAME).cma
 
-.PHONY: test.byte test.opt staticfiles
+.PHONY: test.byte test.opt staticfiles byte opt
 
 test.byte:: byte | $(addprefix $(TEST_PREFIX),$(DIST_DIRS)) staticfiles
 	@echo "==== The website is available at http://localhost:$(TEST_PORT) ===="
@@ -58,10 +58,10 @@ test.opt:: opt | $(addprefix $(TEST_PREFIX),$(DIST_DIRS)) staticfiles
 
 test.static.byte: static.byte | $(addprefix $(TEST_PREFIX),$(DIST_DIRS)) staticfiles
 	@echo "==== The website is available at http://localhost:$(TEST_PORT) ===="
-	dune exec ./project_name_main.bc
+	dune exec ./$(PROJECT_NAME)_main.bc
 test.static.opt: static.opt | $(addprefix $(TEST_PREFIX),$(DIST_DIRS)) staticfiles
 	@echo "==== The website is available at http://localhost:$(TEST_PORT) ===="
-	dune exec ./project_name_main.exe
+	dune exec ./$(PROJECT_NAME)_main.exe
 
 $(addprefix $(TEST_PREFIX), $(DIST_DIRS)):
 	mkdir -p $@
@@ -73,23 +73,25 @@ staticfiles:
 ## Static executable
 
 static.byte: byte
-	dune build project_name_main.bc
+	dune build $(PROJECT_NAME)_main.bc
 
 static.opt: opt
-	dune build project_name_main.exe
+	dune build $(PROJECT_NAME)_main.exe
 
 ##----------------------------------------------------------------------
 ## Installing & Running
 
-.PHONY: install install.byte install.byte install.opt install.static install.etc install.lib install.lib.byte install.lib.opt run.byte run.opt
+.PHONY: install install.exe install.byte install.byte install.opt install.static install.etc install.lib install.lib.byte install.lib.opt run.byte run.opt
 install: install.byte install.opt
+install.exe: install.etc install.static
+	dune install
 install.byte: install.lib.byte install.etc install.static | $(addprefix $(PREFIX),$(DATADIR) $(LOGDIR) $(shell dirname $(CMDPIPE)))
 install.opt: install.lib.opt install.etc install.static | $(addprefix $(PREFIX),$(DATADIR) $(LOGDIR) $(shell dirname $(CMDPIPE)))
 install.lib: install.lib.byte install.lib.opt
-install.lib.byte: $(TEST_PREFIX)$(LIBDIR)/$(PROJECT_NAME).cma | $(PREFIX)$(LIBDIR)
-	install $< $(PREFIX)$(LIBDIR)
-install.lib.opt: $(TEST_PREFIX)$(LIBDIR)/$(PROJECT_NAME).cmxs | $(PREFIX)$(LIBDIR)
-	install $< $(PREFIX)$(LIBDIR)
+install.lib.byte: byte | $(PREFIX)$(LIBDIR)
+	install $(TEST_PREFIX)$(LIBDIR)/$(PROJECT_NAME).cma $(PREFIX)$(LIBDIR)
+install.lib.opt: opt | $(PREFIX)$(LIBDIR)
+	install $(TEST_PREFIX)$(LIBDIR)/$(PROJECT_NAME).cmxs $(PREFIX)$(LIBDIR)
 install.static: $(TEST_PREFIX)$(ELIOMSTATICDIR)/$(PROJECT_NAME).js | $(PREFIX)$(STATICDIR) $(PREFIX)$(ELIOMSTATICDIR)
 	cp -r $(LOCAL_STATIC_CSS) $(PREFIX)$(FILESDIR)
 	cp -r $(LOCAL_STATIC_IMAGES) $(PREFIX)$(FILESDIR)
@@ -111,11 +113,18 @@ $(addprefix $(PREFIX),$(DATADIR) $(LOGDIR) $(ELIOMSTATICDIR) $(shell dirname $(C
 	install $(addprefix -o ,$(WWWUSER)) -d $@
 
 run.byte:
+	@echo "==== Running ocsigenserver with configuration file  ===="
 	@echo "==== The website is available at http://localhost:$(PORT) ===="
 	$(OCSIGENSERVER) $(RUN_DEBUG) -c ${PREFIX}${ETCDIR}/${PROJECT_NAME}.conf
 run.opt:
+	@echo "==== Running ocsigenserver with configuration file  ===="
 	@echo "==== The website is available at http://localhost:$(PORT) ===="
 	$(OCSIGENSERVER.OPT) $(RUN_DEBUG) -c ${PREFIX}${ETCDIR}/${PROJECT_NAME}.conf
+
+run.static:
+	@echo "==== Running static executable ===="
+	@echo "==== The website is available at http://localhost:$(PORT) ===="
+	${PROJECT_NAME}
 
 ##----------------------------------------------------------------------
 

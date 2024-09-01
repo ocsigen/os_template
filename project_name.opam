@@ -1,7 +1,7 @@
 opam-version: "2.0"
 name: "project_name"
 version: "0.1"
-synopsis: "Pseudo package for defining project dependencies"
+synopsis: "project_name"
 
 depends: [
   "eliom" {>= "11.0.0" & < "12.0.0"}
