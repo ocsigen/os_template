@@ -93,11 +93,15 @@ install.lib.byte: byte | $(PREFIX)$(LIBDIR)
 install.lib.opt: opt | $(PREFIX)$(LIBDIR)
 	install $(TEST_PREFIX)$(LIBDIR)/$(PROJECT_NAME).cmxs $(PREFIX)$(LIBDIR)
 install.static: $(TEST_PREFIX)$(ELIOMSTATICDIR)/$(PROJECT_NAME).js | $(PREFIX)$(STATICDIR) $(PREFIX)$(ELIOMSTATICDIR)
-	cp -r $(LOCAL_STATIC_CSS) $(PREFIX)$(FILESDIR)
 	cp -r $(LOCAL_STATIC_IMAGES) $(PREFIX)$(FILESDIR)
 	cp -r $(LOCAL_STATIC_FONTS) $(PREFIX)$(FILESDIR)
 	[ -z $(WWWUSER) ] || chown -R $(WWWUSER) $(PREFIX)$(FILESDIR)
-	install $(addprefix -o ,$(WWWUSER)) $< $(PREFIX)$(ELIOMSTATICDIR)
+	HASH=`md5sum _build/default/client/$(PROJECT_NAME).bc.js | cut -d ' ' -f 1` && \
+	install $(addprefix -o ,$(WWWUSER)) $(JS_PREFIX)_$$HASH.js $(PREFIX)$(ELIOMSTATICDIR) && \
+	ln -sf $(PROJECT_NAME)_$$HASH.js $(PREFIX)$(ELIOMSTATICDIR)/$(PROJECT_NAME).js
+	HASH=`cat $(LOCAL_CSS) | md5sum | cut -d ' ' -f 1` && \
+	install $(addprefix -o ,$(WWWUSER)) $(CSS_PREFIX)_$$HASH.css $(PREFIX)$(ELIOMSTATICDIR)/css && \
+	ln -sf $(PROJECT_NAME)_$$HASH.css $(PREFIX)$(ELIOMSTATICDIR)/css/$(PROJECT_NAME).css
 install.etc: $(TEST_PREFIX)$(ETCDIR)/$(PROJECT_NAME).conf | $(PREFIX)$(ETCDIR)
 	install $< $(PREFIX)$(ETCDIR)/$(PROJECT_NAME).conf
 
