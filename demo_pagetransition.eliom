@@ -1,4 +1,4 @@
-open%shared Lwt.Syntax
+open Eio.Std
 
 [%%shared
 (* This demo illustrates Eliom's DOM caching feature.
@@ -13,30 +13,27 @@ open Eliom_content]
 
 [%%shared open Html]
 [%%shared open Html.D]
-[%%client open Js_of_ocaml_lwt]
+[%%client]
 
 let%shared create_item index =
   let open F in
   li
     ~a:
-      [
-        a_class
-          [ "demo-list-item"; Printf.sprintf "demo-list-item-%d" (index mod 5) ];
+      [ a_class
+          ["demo-list-item"; Printf.sprintf "demo-list-item-%d" (index mod 5)]
       ]
-    [
-      a ~service:Demo_services.detail_page
-        [ txt (Printf.sprintf "list%d" index) ]
-        index;
-    ]
+    [ a ~service:Demo_services.detail_page
+        [txt (Printf.sprintf "list%d" index)]
+        index ]
 
 let%shared page () =
   let l =
     (fun i -> create_item (i + 1))
     |> Array.init 10 |> Array.to_list
-    |> ul ~a:[ a_class [ "demo-list" ] ]
+    |> ul ~a:[a_class ["demo-list"]]
   in
   let add_button =
-    div ~a:[ a_class [ "demo-button" ] ] [%i18n Demo.pagetransition_add_button]
+    div ~a:[a_class ["demo-button"]] [%i18n Demo.pagetransition_add_button]
   in
   ignore
     [%client
@@ -53,35 +50,31 @@ let%shared page () =
            r := !r + 1;
            !r
        in
-       Lwt_js_events.clicks (To_dom.of_element ~%add_button) (fun _ _ ->
-           Html.Manip.appendChild ~%l (create_item (counter ()));
-           Lwt.return_unit)
-        : unit Lwt.t)];
-  Lwt.return
-    [
-      h1 [%i18n Demo.pagetransition_list_page];
-      p [%i18n Demo.pagetransition_intro];
-      l;
-      add_button;
-    ]
+       Js_of_ocaml_eio.Eio_js_events.clicks (To_dom.of_element ~%add_button)
+         (fun _ _ -> Html.Manip.appendChild ~%l (create_item (counter ())))
+       : unit Promise.t)];
+  [ h1 [%i18n Demo.pagetransition_list_page]
+  ; p [%i18n Demo.pagetransition_intro]
+  ; l
+  ; add_button ]
 
 let%shared make_detail_page page () =
   let back_button =
-    div ~a:[ a_class [ "demo-button" ] ] [%i18n Demo.pagetransition_back_button]
+    div ~a:[a_class ["demo-button"]] [%i18n Demo.pagetransition_back_button]
   in
   ignore
     [%client
-      (Lwt.async (fun () ->
-           Lwt_js_events.clicks (To_dom.of_element ~%back_button) (fun _ _ ->
-               Js_of_ocaml.Dom_html.window##.history##back;
-               Lwt.return_unit))
-        : unit)];
-  [
-    h1
+      (Fiber.fork
+         ~sw:(Stdlib.Option.get (Fiber.get Ocsigen_lib.current_switch))
+         (fun () ->
+            Js_of_ocaml_eio.Eio_js_events.clicks
+              (To_dom.of_element ~%back_button) (fun _ _ ->
+              Js_of_ocaml.Dom_html.window##.history##back))
+       : unit)];
+  [ h1
       ([%i18n Demo.pagetransition_detail_page]
-      @ [ txt (Printf.sprintf " %d" page) ]);
-    back_button;
-  ]
+      @ [txt (Printf.sprintf " %d" page)])
+  ; back_button ]
 
 (* Service registration is done on both sides (shared section),
    so that pages can be generated from the server
@@ -90,15 +83,15 @@ let%shared make_detail_page page () =
 let%shared () =
   Project_name_base.App.register ~service:Demo_services.demo_pagetransition
     ( Project_name_page.Opt.connected_page @@ fun myid_o () () ->
-      let* p = page () in
+      let p = page () in
       Project_name_container.page
-        ~a:[ a_class [ "os-page-demo-pagetransition" ] ]
+        ~a:[a_class ["os-page-demo-pagetransition"]]
         myid_o p )
 
 let%shared () =
   let detail_page_handler myid_o page () =
     Project_name_container.page
-      ~a:[ a_class [ "os-page-demo-transition" ] ]
+      ~a:[a_class ["os-page-demo-transition"]]
       myid_o (make_detail_page page ())
   in
   Project_name_base.App.register ~service:Demo_services.detail_page
