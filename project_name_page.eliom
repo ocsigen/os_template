@@ -15,18 +15,18 @@ let%client css_name =
   with _ -> ""
 
 let%server css_name_script =
-  [script (cdata_script (Printf.sprintf "var __css_name = '%s';" css_name))]
+  [ script (cdata_script (Printf.sprintf "var __css_name = '%s';" css_name)) ]
 
 let%client css_name_script = []
 
 (* Warning: either we use exactly the same global node (and make sure
    global nodes work properly on client side), or we do not add the
    script on client side.  We chose the second solution. *)
-let%server app_js = [Project_name_base.App.application_script ~defer:true ()]
+let%server app_js = [ Project_name_base.App.application_script ~defer:true () ]
 let%client app_js = []
 let%server the_local_js = []
 let%client the_local_js = [] (* in index.html *)
-let%shared the_local_css = [[css_name]]
+let%shared the_local_css = [ [ css_name ] ]
 
 [%%shared
 module Page_config = struct
@@ -39,8 +39,10 @@ module Page_config = struct
   let other_head =
     meta
       ~a:
-        [ a_name "viewport"
-        ; a_content "width=device-width, initial-scale=1, user-scalable=no" ]
+        [
+          a_name "viewport";
+          a_content "width=device-width, initial-scale=1, user-scalable=no";
+        ]
       ()
     :: css_name_script
     @ app_js
@@ -50,15 +52,15 @@ module Page_config = struct
 
   let default_error_page _ _ exn =
     Project_name_container.page None
-      (if Ocsigen_config.get_debugmode ()
-       then [p [txt (Printexc.to_string exn)]]
-       else [p [txt "Error"]])
+      (if Ocsigen_config.get_debugmode () then
+         [ p [ txt (Printexc.to_string exn) ] ]
+       else [ p [ txt "Error" ] ])
 
   let default_connected_error_page myid_o _ _ exn =
     Project_name_container.page myid_o
-      (if Ocsigen_config.get_debugmode ()
-       then [p [txt (Printexc.to_string exn)]]
-       else [p [txt "Error"]])
+      (if Ocsigen_config.get_debugmode () then
+         [ p [ txt (Printexc.to_string exn) ] ]
+       else [ p [ txt "Error" ] ])
 end
 
 include Os_page.Make (Page_config)]

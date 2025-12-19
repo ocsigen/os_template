@@ -15,19 +15,16 @@ module Make (A : module type of Eliom_content.Html.F) = struct
       "i" is used because it is the de facto standard for icons. The
       optional parameter ~a is at the end to be able to add other CSS
       classes with predefined icons. *)
-  let icon
-        classes
-        ?(a = ([] : Html_types.i_attrib Eliom_content.Html.attrib list))
-        ()
-    =
+  let icon classes
+      ?(a = ([] : Html_types.i_attrib Eliom_content.Html.attrib list)) () =
     A.i ~a:(A.a_class ("fa" :: classes) :: a) []
 
   (** Icons used by Ocsigen Start's library *)
 
-  let user = icon ["fa-user"; "fa-fw"]
-  let signout = icon ["fa-sign-out"; "fa-fw"]
-  let close = icon ["fa-close"; "fa-fw"]
-  let trash = icon ["fa-trash-o"; "fa-fw"]
+  let user = icon [ "fa-user"; "fa-fw" ]
+  let signout = icon [ "fa-sign-out"; "fa-fw" ]
+  let close = icon [ "fa-close"; "fa-fw" ]
+  let trash = icon [ "fa-trash-o"; "fa-fw" ]
 
   (* Add your own icons here. See http://fontawesome.io/icons/ for the
      complete list of CSS classes available by default. *)

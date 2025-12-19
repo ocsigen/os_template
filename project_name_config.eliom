@@ -37,8 +37,10 @@ let os_db_unix_domain_socket_dir = ref None
 let app =
   let open Ocsigen_extensions.Configuration in
   let attributes =
-    [ attribute ~name:"name" ~obligatory:true (fun h -> app_name := h)
-    ; attribute ~name:"css" ~obligatory:true (fun h -> css_name := h) ]
+    [
+      attribute ~name:"name" ~obligatory:true (fun h -> app_name := h);
+      attribute ~name:"css" ~obligatory:true (fun h -> css_name := h);
+    ]
   in
   element ~name:"app" ~obligatory:true ~attributes ()
 
@@ -46,8 +48,10 @@ let app =
 let avatars =
   let open Ocsigen_extensions.Configuration in
   let attributes =
-    [ attribute ~name:"dir" ~obligatory:true (fun h ->
-        avatar_dir := Eliom_lib.String.split '/' h) ]
+    [
+      attribute ~name:"dir" ~obligatory:true (fun h ->
+          avatar_dir := Eliom_lib.String.split '/' h);
+    ]
   in
   element ~name:"avatars" ~obligatory:true ~attributes ()
 
@@ -55,21 +59,24 @@ let avatars =
 let os_db =
   let open Ocsigen_extensions.Configuration in
   let attributes =
-    [ attribute ~name:"host" (fun h -> os_db_host := Some h)
-    ; attribute ~name:"port" (fun h ->
-        os_db_port :=
-          try Some (int_of_string h)
-          with Failure _ ->
-            raise
-            @@ Ocsigen_extensions.Error_in_config_file "port is not an integer")
-    ; attribute ~name:"user" (fun h -> os_db_user := Some h)
-    ; attribute ~name:"password" (fun h -> os_db_password := Some h)
-    ; attribute ~name:"database" (fun h -> os_db_database := Some h)
-    ; attribute ~name:"unix_domain_socket_dir" (fun h ->
-        os_db_unix_domain_socket_dir := Some h) ]
+    [
+      attribute ~name:"host" (fun h -> os_db_host := Some h);
+      attribute ~name:"port" (fun h ->
+          os_db_port :=
+            try Some (int_of_string h)
+            with Failure _ ->
+              raise
+              @@ Ocsigen_extensions.Error_in_config_file
+                   "port is not an integer");
+      attribute ~name:"user" (fun h -> os_db_user := Some h);
+      attribute ~name:"password" (fun h -> os_db_password := Some h);
+      attribute ~name:"database" (fun h -> os_db_database := Some h);
+      attribute ~name:"unix_domain_socket_dir" (fun h ->
+          os_db_unix_domain_socket_dir := Some h);
+    ]
   in
   element ~name:"os-db" ~attributes ()
 
 let _ =
-  if Ocsigen_config.has_configuration_file ()
-  then Eliom_config.parse_config [app; avatars; os_db]
+  if Ocsigen_config.has_configuration_file () then
+    Eliom_config.parse_config [ app; avatars; os_db ]

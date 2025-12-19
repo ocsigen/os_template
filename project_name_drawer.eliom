@@ -6,17 +6,21 @@
 (** This module defines the drawer menu *)
 
 let%shared item text service =
-  li [a ~a:[a_class ["os-drawer-item"]] ~service [txt text] ()]
+  li [ a ~a:[ a_class [ "os-drawer-item" ] ] ~service [ txt text ] () ]
 
 let%shared user_menu () =
-  [ item
+  [
+    item
       [%i18n S.settings ~capitalize:true]
-      Project_name_services.settings_service
-  ; Eliom_content.Html.F.li
-      [ Os_user_view.disconnect_link
+      Project_name_services.settings_service;
+    Eliom_content.Html.F.li
+      [
+        Os_user_view.disconnect_link
           ~text_logout:[%i18n S.logout ~capitalize:true]
-          ~a:[a_class ["os-drawer-item"]]
-          () ] ]
+          ~a:[ a_class [ "os-drawer-item" ] ]
+          ();
+      ];
+  ]
 
 let%shared make ?user () =
   let items = if user = None then [] else user_menu () in
@@ -26,13 +30,13 @@ let%shared make ?user () =
     :: Demo_tools.drawer_contents ()
     :: items
   in
-  let menu = ul ~a:[a_class ["os-drawer-menu"]] items in
+  let menu = ul ~a:[ a_class [ "os-drawer-menu" ] ] items in
   let contents =
     match user with
-    | None -> [menu]
+    | None -> [ menu ]
     | Some user ->
         let user_box = Os_user_view.connected_user_box ~user in
-        [user_box; menu]
+        [ user_box; menu ]
   in
   let drawer, _, _ = Ot_drawer.drawer contents in
   drawer

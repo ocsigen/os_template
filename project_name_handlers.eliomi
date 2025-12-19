@@ -10,20 +10,17 @@
 [%%server.start]
 
 val upload_user_avatar_handler :
-   Os_types.User.id
-  -> unit
-  -> unit
-     * ((float * float * float * float) option * Ocsigen_extensions.file_info)
-  -> unit Lwt.t
+  Os_types.User.id ->
+  unit ->
+  unit * ((float * float * float * float) option * Ocsigen_extensions.file_info) ->
+  unit Lwt.t
 (** Update new user avatar with cropping option. The new avatar is saved
     and the old one is removed. *)
 
 [%%shared.start]
 
 val set_personal_data_handler :
-   unit
-  -> (string * string) * (string * string)
-  -> unit Lwt.t
+  unit -> (string * string) * (string * string) -> unit Lwt.t
 (** Update personal data. It uses the default OS handler
     {!Os_handlers.set_personal_data_handler} and gets the user information
     with {!Os_session.connected_fun}. *)
@@ -33,15 +30,15 @@ val forgot_password_handler : unit -> string -> unit Lwt.t
     {!Os_handlers.forgot_password_handler} with the main service. *)
 
 val action_link_handler :
-   Os_types.User.id option
-  -> string
-  -> unit
-  -> Project_name_base.App.result Lwt.t
+  Os_types.User.id option ->
+  string ->
+  unit ->
+  Project_name_base.App.result Lwt.t
 
 val set_password_handler :
-   unit
-  -> string * string
-  -> Eliom_service.non_ocaml Eliom_registration.redirection Lwt.t
+  unit ->
+  string * string ->
+  Eliom_service.non_ocaml Eliom_registration.redirection Lwt.t
 (** Set a new password. It uses the default OS handler
     {!Os_handlers.set_password_handler} and gets the user information
     with {!Os_session.connected_fun}. *)
@@ -57,29 +54,18 @@ val preregister_handler : unit -> string -> unit Lwt.t
     by sending the userid as first parameter. *)
 
 val main_service_handler :
-   Os_types.User.id option
-  -> unit
-  -> unit
-  -> Os_page.content Lwt.t
+  Os_types.User.id option -> unit -> unit -> Os_page.content Lwt.t
 (** The first page of the application *)
 
 val about_handler :
-   Os_types.User.id option
-  -> unit
-  -> unit
-  -> Os_page.content Lwt.t
+  Os_types.User.id option -> unit -> unit -> Os_page.content Lwt.t
 (** About page *)
 
 val settings_handler :
-   Os_types.User.id option
-  -> unit
-  -> unit
-  -> Os_page.content Lwt.t
+  Os_types.User.id option -> unit -> unit -> Os_page.content Lwt.t
 (** Settings page. If the user is connected (see
     {!Project_name_container.get_user_data}), a settings
     container will be created. *)
 
 val update_language_handler :
-   unit
-  -> string
-  -> Eliom_registration.Action.page Lwt.t
+  unit -> string -> Eliom_registration.Action.page Lwt.t
