@@ -36,7 +36,8 @@ let%shared () =
     ~service:Os_services.update_language_service
     Project_name_handlers.update_language_handler;
   Project_name_base.App.register ~service:Os_services.main_service
-    (Project_name_page.Opt.connected_page Project_name_handlers.main_service_handler);
+    (Project_name_page.Opt.connected_page
+       Project_name_handlers.main_service_handler);
   Project_name_base.App.register ~service:Project_name_services.about_service
     (Project_name_page.Opt.connected_page Project_name_handlers.about_handler);
   Project_name_base.App.register ~service:Project_name_services.settings_service

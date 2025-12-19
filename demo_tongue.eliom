@@ -32,4 +32,5 @@ let%shared () =
   Project_name_base.App.register ~service:Demo_services.demo_tongue
     ( Project_name_page.Opt.connected_page @@ fun myid_o () () ->
       let%lwt p = page () in
-      Project_name_container.page ~a:[a_class ["os-page-demo-tongue"]] myid_o p )
+      Project_name_container.page ~a:[a_class ["os-page-demo-tongue"]] myid_o p
+    )

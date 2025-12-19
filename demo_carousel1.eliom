@@ -7,9 +7,10 @@ open Eliom_content.Html]
 [%%shared open Eliom_content.Html.F]
 
 (* Bind arrow keys *)
-let%shared bind_keys
-    (change : ([`Goto of int | `Next | `Prev] -> unit) Eliom_client_value.t)
-    (carousel : [`Div] Eliom_content.Html.elt)
+let%shared
+    bind_keys
+      (change : ([`Goto of int | `Next | `Prev] -> unit) Eliom_client_value.t)
+      (carousel : [`Div] Eliom_content.Html.elt)
   =
   ignore
     [%client
@@ -73,4 +74,6 @@ let%shared () =
   Project_name_base.App.register ~service:Demo_services.demo_carousel1
     ( Project_name_page.Opt.connected_page @@ fun myid_o () () ->
       let%lwt p = page () in
-      Project_name_container.page ~a:[a_class ["os-page-demo-carousel1"]] myid_o p )
+      Project_name_container.page
+        ~a:[a_class ["os-page-demo-carousel1"]]
+        myid_o p )
