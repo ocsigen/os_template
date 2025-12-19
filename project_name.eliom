@@ -48,13 +48,11 @@ let%server () =
     ~service:Project_name_services.upload_user_avatar_service
     (Os_session.connected_fun Project_name_handlers.upload_user_avatar_handler)
 
-(* Print more debugging information when <debugmode/> is in config file
-   (DEBUG = yes in Makefile.options).
-   Example of use:
-   let section = Lwt_log.Section.make "Project_name:sectionname"
-   ...
-   Lwt_log.ign_info ~section "This is an information";
-   (or ign_debug, ign_warning, ign_error etc.)
+(* Print more debugging information when <debugmode/> is in config file (DEBUG =
+   yes in Makefile.options). Example of use: let src = Logs.Src.create
+   "Project_name.sectionname" module Log = (val Logs.src_log src : Logs.LOG) ...
+   Log.info (fun m -> m "This is an information"); (or Log.debug, Log.warn,
+   Log.err etc.)
 *)
 let%server _ =
   if Eliom_config.get_debugmode ()
@@ -62,13 +60,13 @@ let%server _ =
     ignore
       [%client
         ((* Eliom_config.debug_timings := true; *)
-         (* Lwt_log_core.add_rule "eliom:client*" Lwt_log_js.Debug; *)
-         (* Lwt_log_core.add_rule "os*" Lwt_log_js.Debug; *)
-         Lwt_log_core.add_rule "Project_name*" Lwt_log_js.Debug
-         (* Lwt_log_core.add_rule "*" Lwt_log_js.Debug *)
+         (* Logs.Src.set_level (Logs.Src.create "eliom.client") (Some Logs.Debug); *)
+         (* Logs.Src.set_level (Logs.Src.create "os") (Some Logs.Debug); *)
+         Logs.Src.set_level (Logs.Src.create "Project_name") (Some Logs.Debug)
+         (* Logs.set_level (Some Logs.Debug) *)
          : unit)];
-    (* Lwt_log_core.add_rule "*" Lwt_log.Debug *)
-    Lwt_log_core.add_rule "Project_name*" Lwt_log.Debug)
+    (* Logs.set_level (Some Logs.Debug) *)
+    Logs.Src.set_level (Logs.Src.create "Project_name") (Some Logs.Debug))
 
 (* The modules below are all the modules that needs to be explicitely
    linked-in. *)

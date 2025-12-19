@@ -147,5 +147,5 @@ let _ =
    debugger console, you can do so by uncommenting the following
    lines.  *)
 (* let () = Eliom_config.debug_timings := true *)
-(* let () = Lwt_log_core.add_rule "eliom:client*" Lwt_log_js.Debug *)
-(* let () = Lwt_log_core.add_rule "os*" Lwt_log_js.Debug *)
+(* let () = Logs.Src.set_level (Logs.Src.create "eliom.client") (Some Logs.Debug) *)
+(* let () = Logs.Src.set_level (Logs.Src.create "os") (Some Logs.Debug) *)
