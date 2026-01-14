@@ -54,12 +54,16 @@ let%server () =
    Log.info (fun m -> m "This is an information"); (or Log.debug, Log.warn,
    Log.err etc.)
 *)
+let%client () =
+  Js_of_ocaml.Console.console##log (Js_of_ocaml.Js.string "=== CLIENT MODULE INIT ===")
+
 let%server _ =
   if Eliom_config.get_debugmode ()
   then (
     ignore
       [%client
-        ((* Eliom_config.debug_timings := true; *)
+        (print_endline "hello";
+         (* Eliom_config.debug_timings := true; *)
          (* Logs.Src.set_level (Logs.Src.create "eliom.client") (Some Logs.Debug); *)
          (* Logs.Src.set_level (Logs.Src.create "os") (Some Logs.Debug); *)
          Logs.Src.set_level (Logs.Src.create "Project_name") (Some Logs.Debug)
@@ -74,26 +78,25 @@ let%server _ =
 [%%shared.start]
 
 module Demo = Demo
+module Demo_rpc = Demo_rpc
+module Demo_ref = Demo_ref
+module Demo_spinner = Demo_spinner
+module Demo_pgocaml = Demo_pgocaml
+module Demo_users = Demo_users
+module Demo_links = Demo_links
+module Demo_i18n = Demo_i18n
 module Demo_cache = Demo_cache
 module Demo_calendar = Demo_calendar
 module Demo_carousel1 = Demo_carousel1
 module Demo_carousel2 = Demo_carousel2
 module Demo_carousel3 = Demo_carousel3
-module Demo_i18n = Demo_i18n
-module Demo_links = Demo_links
+module Demo_timepicker = Demo_timepicker
+module Demo_tongue = Demo_tongue
 module Demo_notif = Demo_notif
-module Demo_pagetransition = Demo_pagetransition
-module Demo_pgocaml = Demo_pgocaml
-module Demo_popup = Demo_popup
 module Demo_pulltorefresh = Demo_pulltorefresh
 module Demo_react = Demo_react
-module Demo_ref = Demo_ref
-module Demo_rpc = Demo_rpc
-module Demo_spinner = Demo_spinner
-module Demo_timepicker = Demo_timepicker
+module Demo_pagetransition = Demo_pagetransition
 module Demo_tips = Demo_tips
-module Demo_tongue = Demo_tongue
-module Demo_users = Demo_users
 module Project_name_config = Project_name_config
 
 [%%client.start]

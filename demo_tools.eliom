@@ -4,7 +4,8 @@
 [%%shared.start]
 
 let demos =
-  [ (fun () -> [%i18n Demo.S.rpc_button]), Demo_services.demo_rpc
+  [ (fun () -> [%i18n Demo.S.tips]), Demo_services.demo_tips
+  ; (fun () -> [%i18n Demo.S.rpc_button]), Demo_services.demo_rpc
   ; (fun () -> [%i18n Demo.S.eliom_ref]), Demo_services.demo_ref
   ; (fun () -> [%i18n Demo.S.spinner]), Demo_services.demo_spinner
   ; (fun () -> [%i18n Demo.S.pgocaml]), Demo_services.demo_pgocaml
@@ -12,7 +13,6 @@ let demos =
   ; (fun () -> [%i18n Demo.S.links_and_static_files]), Demo_services.demo_links
   ; ( (fun () -> [%i18n Demo.S.internationalization ~capitalize:true])
     , Demo_services.demo_i18n )
-  ; (fun () -> [%i18n Demo.S.tips]), Demo_services.demo_tips
   ; (fun () -> [%i18n Demo.S.carousel_1]), Demo_services.demo_carousel1
   ; (fun () -> [%i18n Demo.S.carousel_2]), Demo_services.demo_carousel2
   ; (fun () -> [%i18n Demo.S.carousel_wheel]), Demo_services.demo_carousel3
