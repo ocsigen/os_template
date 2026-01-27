@@ -72,33 +72,29 @@ let%server _ =
 (* The modules below are all the modules that needs to be explicitely
    linked-in. *)
 
-[%%shared.start]
+module%shared Demo = Demo
+module%shared Demo_cache = Demo_cache
+module%shared Demo_calendar = Demo_calendar
+module%shared Demo_carousel1 = Demo_carousel1
+module%shared Demo_carousel2 = Demo_carousel2
+module%shared Demo_carousel3 = Demo_carousel3
+module%shared Demo_i18n = Demo_i18n
+module%shared Demo_links = Demo_links
+module%shared Demo_notif = Demo_notif
+module%shared Demo_pagetransition = Demo_pagetransition
+module%shared Demo_pgocaml = Demo_pgocaml
+module%shared Demo_popup = Demo_popup
+module%shared Demo_pulltorefresh = Demo_pulltorefresh
+module%shared Demo_react = Demo_react
+module%shared Demo_ref = Demo_ref
+module%shared Demo_rpc = Demo_rpc
+module%shared Demo_spinner = Demo_spinner
+module%shared Demo_timepicker = Demo_timepicker
+module%shared Demo_tips = Demo_tips
+module%shared Demo_tongue = Demo_tongue
+module%shared Demo_users = Demo_users
+module%shared Project_name_config = Project_name_config
 
-module Demo = Demo
-module Demo_cache = Demo_cache
-module Demo_calendar = Demo_calendar
-module Demo_carousel1 = Demo_carousel1
-module Demo_carousel2 = Demo_carousel2
-module Demo_carousel3 = Demo_carousel3
-module Demo_i18n = Demo_i18n
-module Demo_links = Demo_links
-module Demo_notif = Demo_notif
-module Demo_pagetransition = Demo_pagetransition
-module Demo_pgocaml = Demo_pgocaml
-module Demo_popup = Demo_popup
-module Demo_pulltorefresh = Demo_pulltorefresh
-module Demo_react = Demo_react
-module Demo_ref = Demo_ref
-module Demo_rpc = Demo_rpc
-module Demo_spinner = Demo_spinner
-module Demo_timepicker = Demo_timepicker
-module Demo_tips = Demo_tips
-module Demo_tongue = Demo_tongue
-module Demo_users = Demo_users
-module Project_name_config = Project_name_config
-
-[%%client.start]
-
-module Project_name_language = Project_name_language
-module Project_name_mobile = Project_name_mobile
-module Project_name_phone_connect = Project_name_phone_connect
+module%client Project_name_language = Project_name_language
+module%client Project_name_mobile = Project_name_mobile
+module%client Project_name_phone_connect = Project_name_phone_connect

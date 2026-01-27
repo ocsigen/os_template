@@ -3,9 +3,9 @@
 
 (** Demo for shared reactive content *)
 
-[%%client open Js_of_ocaml_lwt]
-[%%shared open Eliom_content]
-[%%shared open Html.D]
+open%client Js_of_ocaml_lwt
+open%shared Eliom_content
+open%shared Html.D
 
 (* Make a text input field that calls [f s] for each [s] submitted *)
 let%shared make_form msg f =

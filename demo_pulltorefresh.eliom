@@ -3,8 +3,8 @@
 
 (** Demo for refreshable content *)
 
-[%%shared open Eliom_content.Html]
-[%%shared open Eliom_content.Html.D]
+open%shared Eliom_content.Html
+open%shared Eliom_content.Html.D
 
 let%shared page () =
   let counter_sig, set_counter = Eliom_shared.React.S.create 0 in
