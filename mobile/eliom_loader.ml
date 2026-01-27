@@ -24,7 +24,7 @@ let debug = false
 let log =
   if debug
   then (fun s ->
-    Js_of_ocaml.Firebug.console##log (Js_of_ocaml.Js.string s);
+    Js_of_ocaml.Console.console##log (Js_of_ocaml.Js.string s);
     let p = Js_of_ocaml.Dom_html.createP Js_of_ocaml.Dom_html.document in
     p##.style##.color := Js_of_ocaml.Js.string "#64b5f6";
     Js_of_ocaml.Dom.appendChild p
