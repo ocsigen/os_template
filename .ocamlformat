@@ -1,3 +1,5 @@
+parse-docstrings = false
+wrap-comments = false
 break-cases = fit
 break-collection-expressions = fit-or-vertical
 break-fun-decl = wrap
