@@ -10,6 +10,7 @@ let%shared demos =
   ; (fun () -> [%i18n Demo.S.links_and_static_files]), Demo_services.demo_links
   ; ( (fun () -> [%i18n Demo.S.internationalization ~capitalize:true])
     , Demo_services.demo_i18n )
+  ; (fun () -> [%i18n Demo.S.form_widgets]), Demo_services.demo_forms
   ; (fun () -> [%i18n Demo.S.tips]), Demo_services.demo_tips
   ; (fun () -> [%i18n Demo.S.carousel_1]), Demo_services.demo_carousel1
   ; (fun () -> [%i18n Demo.S.carousel_2]), Demo_services.demo_carousel2
@@ -22,7 +23,6 @@ let%shared demos =
   ; (fun () -> [%i18n Demo.S.pull_to_refresh]), Demo_services.demo_pulltorefresh
   ; (fun () -> [%i18n Demo.S.cache]), Demo_services.demo_cache
   ; (fun () -> [%i18n Demo.S.pagetransition]), Demo_services.demo_pagetransition
-  ; (fun () -> [%i18n Demo.S.form_widgets]), Demo_services.demo_forms
   ]
 
 let%shared drawer_contents () =
