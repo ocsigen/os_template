@@ -107,6 +107,7 @@ tips2	Module {{os_tips}} implements a way to display tips in the page to the use
 tips3	This page contains a tip, that you will see only as connected user, until you close it.	Cette page contient une astuce, que vous allez voir seulement en tant qu'utilisateur connecté, jusqu'à ce que vous la fermiez.
 tips4	It is possible to reset the set of already seen tips from the {{set_page}}.	Il est possible de réinitialiser l'ensemble des astuces déjà vues depuis la page {{set_page}}.
 tips5	settings page	page Paramètres
+form_widgets	Form widgets	Widgets de formulaire
 tongue_1	Tongue	Languette
 tuesday	Tuesday	Mardi
 users	Users	Utilisateurs

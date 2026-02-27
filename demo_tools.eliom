@@ -22,6 +22,7 @@ let%shared demos =
   ; (fun () -> [%i18n Demo.S.pull_to_refresh]), Demo_services.demo_pulltorefresh
   ; (fun () -> [%i18n Demo.S.cache]), Demo_services.demo_cache
   ; (fun () -> [%i18n Demo.S.pagetransition]), Demo_services.demo_pagetransition
+  ; (fun () -> [%i18n Demo.S.form_widgets]), Demo_services.demo_forms
   ]
 
 let%shared drawer_contents () =
