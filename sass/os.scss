@@ -167,6 +167,17 @@ a.os-page-header-app-name {
     label {
         font-size: 12px;
     }
+    .ot-password-container {
+        width: 150px;
+        margin: 5px auto;
+        input[type="password"], input[type="text"] {
+            width: auto;
+            margin: 0;
+        }
+        .ot-password-toggle {
+            margin: 0;
+        }
+    }
 }
 .os-sign-up-btn {
     background-color: #fb8282;
