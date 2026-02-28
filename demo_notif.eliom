@@ -2,7 +2,6 @@
    Feel free to use it, modify it, and redistribute it as you wish. *)
 (* Notification demo *)
 open%client Js_of_ocaml_lwt
-
 open%shared Eliom_content
 open%shared Html.D
 
@@ -102,4 +101,5 @@ let%shared () =
   Project_name_base.App.register ~service:Demo_services.demo_notif
     ( Project_name_page.Opt.connected_page @@ fun myid_o () () ->
       let%lwt p = page () in
-      Project_name_container.page ~a:[a_class ["os-page-demo-notif"]] myid_o p )
+      Project_name_container.page ~a:[a_class ["os-page-demo-notif"]] myid_o p
+    )

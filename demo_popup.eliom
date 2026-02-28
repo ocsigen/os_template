@@ -2,7 +2,6 @@
    Feel free to use it, modify it, and redistribute it as you wish. *)
 (* Popup button demo *)
 open%shared Eliom_content.Html
-
 open%shared Eliom_content.Html.F
 open%client Js_of_ocaml_lwt
 
@@ -64,4 +63,5 @@ let%shared () =
   Project_name_base.App.register ~service:Demo_services.demo_popup
     ( Project_name_page.Opt.connected_page @@ fun myid_o () () ->
       let%lwt p = page () in
-      Project_name_container.page ~a:[a_class ["os-page-demo-popup"]] myid_o p )
+      Project_name_container.page ~a:[a_class ["os-page-demo-popup"]] myid_o p
+    )

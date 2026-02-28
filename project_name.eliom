@@ -36,7 +36,8 @@ let%shared () =
     ~service:Os_services.update_language_service
     Project_name_handlers.update_language_handler;
   Project_name_base.App.register ~service:Os_services.main_service
-    (Project_name_page.Opt.connected_page Project_name_handlers.main_service_handler);
+    (Project_name_page.Opt.connected_page
+       Project_name_handlers.main_service_handler);
   Project_name_base.App.register ~service:Project_name_services.about_service
     (Project_name_page.Opt.connected_page Project_name_handlers.about_handler);
   Project_name_base.App.register ~service:Project_name_services.settings_service
@@ -67,12 +68,13 @@ let%server _ =
     (* Enable Debug level only for ocsigenserver, eliom and project_name logs *)
     Logs.Src.list ()
     |> List.iter (fun src ->
-           let name = Logs.Src.name src in
-           if String.starts_with ~prefix:"ocsigenserver" name
-              || String.starts_with ~prefix:"eliom" name
-              || String.starts_with ~prefix:"project_name" name
-              || String.starts_with ~prefix:"Project_name" name
-           then Logs.Src.set_level src (Some Logs.Debug)))
+      let name = Logs.Src.name src in
+      if
+        String.starts_with ~prefix:"ocsigenserver" name
+        || String.starts_with ~prefix:"eliom" name
+        || String.starts_with ~prefix:"project_name" name
+        || String.starts_with ~prefix:"Project_name" name
+      then Logs.Src.set_level src (Some Logs.Debug)))
 
 (* The modules below are all the modules that needs to be explicitely
    linked-in. *)
@@ -100,7 +102,6 @@ module%shared Demo_tips = Demo_tips
 module%shared Demo_tongue = Demo_tongue
 module%shared Demo_users = Demo_users
 module%shared Project_name_config = Project_name_config
-
 module%client Project_name_language = Project_name_language
 module%client Project_name_mobile = Project_name_mobile
 module%client Project_name_phone_connect = Project_name_phone_connect
