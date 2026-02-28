@@ -20,60 +20,162 @@ let%shared page () =
   (* -- standard form -- *)
   let name_inp =
     D.Raw.input
-      ~a:[ a_input_type `Text
-         ; a_placeholder [%i18n Demo.S.form_standard_name] ]
+      ~a:[a_input_type `Text; a_placeholder [%i18n Demo.S.form_standard_name]]
       ()
   in
   let email_inp =
     D.Raw.input
-      ~a:[ a_input_type `Email
-         ; a_placeholder [%i18n Demo.S.form_standard_email] ]
+      ~a:[a_input_type `Email; a_placeholder [%i18n Demo.S.form_standard_email]]
       ()
   in
+  let phone_inp =
+    D.Raw.input
+      ~a:[a_input_type `Tel; a_placeholder [%i18n Demo.S.form_standard_phone]]
+      ()
+  in
+  let age_inp =
+    D.Raw.input
+      ~a:[ a_input_type `Number
+         ; a_input_min (`Number 0)
+         ; a_input_max (`Number 150)
+         ; a_placeholder [%i18n Demo.S.form_standard_age] ]
+      ()
+  in
+  let date_inp = D.Raw.input ~a:[a_input_type `Date] () in
+  let time_inp = D.Raw.input ~a:[a_input_type `Time] () in
+  let pwd_inp =
+    D.Raw.input
+      ~a:[ a_input_type `Password
+         ; a_placeholder [%i18n Demo.S.form_standard_password] ]
+      ()
+  in
+  let pwd_container = Ot_form.password_toggle pwd_inp in
   let msg_inp =
     D.Raw.textarea
       ~a:[a_placeholder [%i18n Demo.S.form_standard_message]]
       (txt "")
+  in
+  let country_sel =
+    D.Raw.select
+      [ D.Raw.option ~a:[a_value "fr"] (txt "France")
+      ; D.Raw.option ~a:[a_value "de"] (txt "Germany")
+      ; D.Raw.option ~a:[a_value "it"] (txt "Italy")
+      ; D.Raw.option ~a:[a_value "es"] (txt "Spain") ]
+  in
+  let radio_m =
+    D.Raw.input
+      ~a:[a_input_type `Radio; a_name "std-gender"; a_value "M"]
+      ()
+  in
+  let radio_f =
+    D.Raw.input
+      ~a:[a_input_type `Radio; a_name "std-gender"; a_value "F"]
+      ()
+  in
+  let radio_o =
+    D.Raw.input
+      ~a:[a_input_type `Radio; a_name "std-gender"; a_value "O"]
+      ()
+  in
+  let terms_cb = D.Raw.input ~a:[a_input_type `Checkbox] () in
+  let satisfaction_inp =
+    D.Raw.input
+      ~a:[ a_input_type `Range
+         ; a_input_min (`Number 0)
+         ; a_input_max (`Number 100)
+         ; a_value "50" ]
+      ()
+  in
+  let color_inp =
+    D.Raw.input ~a:[a_input_type `Color; a_value "#2563eb"] ()
   in
   let submit_btn =
     D.button
       ~a:[a_button_type `Button; a_class ["button"]]
       [txt [%i18n Demo.S.form_standard_submit]]
   in
-  let result_span = D.span [] in
+  let result_div = D.div [] in
   let name_l = [%i18n Demo.S.form_standard_name] in
   let email_l = [%i18n Demo.S.form_standard_email] in
+  let phone_l = [%i18n Demo.S.form_standard_phone] in
+  let age_l = [%i18n Demo.S.form_standard_age] in
+  let date_l = [%i18n Demo.S.form_standard_birthdate] in
+  let time_l = [%i18n Demo.S.form_standard_time] in
+  let pwd_l = [%i18n Demo.S.form_standard_password] in
   let msg_l = [%i18n Demo.S.form_standard_message] in
+  let country_l = [%i18n Demo.S.form_standard_country] in
+  let gender_l = [%i18n Demo.S.form_standard_gender] in
+  let terms_l = [%i18n Demo.S.form_standard_terms] in
+  let satisfaction_l = [%i18n Demo.S.form_standard_satisfaction] in
+  let color_l = [%i18n Demo.S.form_standard_color] in
   let (_ : unit Eliom_client_value.t) =
     [%client
       let btn_el = To_dom.of_element ~%submit_btn in
-      let name_el = To_dom.of_input ~%name_inp in
-      let email_el = To_dom.of_input ~%email_inp in
-      let msg_el = To_dom.of_textarea ~%msg_inp in
-      let result_el = To_dom.of_element ~%result_span in
+      let result_el = To_dom.of_element ~%result_div in
+      let get_input v = Js.to_string (To_dom.of_input v)##.value in
+      let get_checked v = Js.to_bool (To_dom.of_input v)##.checked in
       Lwt.async (fun () ->
-          Lwt_js_events.clicks btn_el (fun _ _ ->
-              let name = Js.to_string name_el##.value in
-              let email = Js.to_string email_el##.value in
-              let msg = Js.to_string msg_el##.value in
-              result_el##.textContent :=
-                Js.some
-                  (Js.string
-                     (Printf.sprintf "%s: %s, %s: %s, %s: %s"
-                        ~%name_l name ~%email_l email ~%msg_l msg));
-              Lwt.return_unit))]
+        Lwt_js_events.clicks btn_el (fun _ _ ->
+          let lines =
+            [ Printf.sprintf "%s: %s" ~%name_l (get_input ~%name_inp)
+            ; Printf.sprintf "%s: %s" ~%email_l (get_input ~%email_inp)
+            ; Printf.sprintf "%s: %s" ~%phone_l (get_input ~%phone_inp)
+            ; Printf.sprintf "%s: %s" ~%age_l (get_input ~%age_inp)
+            ; Printf.sprintf "%s: %s" ~%date_l (get_input ~%date_inp)
+            ; Printf.sprintf "%s: %s" ~%time_l (get_input ~%time_inp)
+            ; Printf.sprintf "%s: %s" ~%pwd_l
+                (String.make (String.length (get_input ~%pwd_inp)) '*')
+            ; Printf.sprintf "%s: %s" ~%msg_l
+                (Js.to_string (To_dom.of_textarea ~%msg_inp)##.value)
+            ; Printf.sprintf "%s: %s" ~%country_l
+                (Js.to_string (To_dom.of_select ~%country_sel)##.value)
+            ; Printf.sprintf "%s: %s" ~%gender_l
+                (let m = get_checked ~%radio_m in
+                 let f = get_checked ~%radio_f in
+                 if m then "M" else if f then "F" else "O")
+            ; Printf.sprintf "%s: %s" ~%terms_l
+                (if get_checked ~%terms_cb then "yes" else "no")
+            ; Printf.sprintf "%s: %s" ~%satisfaction_l
+                (get_input ~%satisfaction_inp)
+            ; Printf.sprintf "%s: %s" ~%color_l (get_input ~%color_inp) ]
+          in
+          result_el##.innerHTML :=
+            Js.string (String.concat "<br>" lines);
+          Lwt.return_unit))]
+  in
+  let field lbl content =
+    div ~a:[a_class ["demo-forms-field"]]
+      [label [strong [txt lbl]]; content]
   in
   let std_section =
     section [%i18n Demo.S.form_standard_title]
       [ p [txt [%i18n Demo.S.form_standard_desc]]
-      ; div [name_inp]
-      ; div [email_inp]
-      ; div [msg_inp]
+      ; field [%i18n Demo.S.form_standard_name] name_inp
+      ; field [%i18n Demo.S.form_standard_email] email_inp
+      ; field [%i18n Demo.S.form_standard_phone] phone_inp
+      ; field [%i18n Demo.S.form_standard_age] age_inp
+      ; field [%i18n Demo.S.form_standard_birthdate] date_inp
+      ; field [%i18n Demo.S.form_standard_time] time_inp
+      ; field [%i18n Demo.S.form_standard_password] pwd_container
+      ; field [%i18n Demo.S.form_standard_message] msg_inp
+      ; field [%i18n Demo.S.form_standard_country] country_sel
+      ; field [%i18n Demo.S.form_standard_gender]
+          (div
+             [ label [radio_m; txt (" " ^ [%i18n Demo.S.form_standard_gender_m])]
+             ; txt " "
+             ; label [radio_f; txt (" " ^ [%i18n Demo.S.form_standard_gender_f])]
+             ; txt " "
+             ; label [radio_o; txt (" " ^ [%i18n Demo.S.form_standard_gender_o])]
+             ])
+      ; field [%i18n Demo.S.form_standard_terms]
+          (label [terms_cb; txt (" " ^ [%i18n Demo.S.form_standard_terms])])
+      ; field [%i18n Demo.S.form_standard_satisfaction] satisfaction_inp
+      ; field [%i18n Demo.S.form_standard_color] color_inp
       ; div [submit_btn]
-      ; p
+      ; div
           ~a:[a_class ["demo-forms-output"]]
-          [ strong [txt ([%i18n Demo.S.form_standard_result] ^ ": ")]
-          ; result_span ] ]
+          [ strong [txt ([%i18n Demo.S.form_standard_result] ^ ":")]
+          ; result_div ] ]
   in
   (* -- reactive_input -- *)
   let ri_input, (ri_signal, _ri_set) = Ot_form.reactive_input ~value:"hello" () in
