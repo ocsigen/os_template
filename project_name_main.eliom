@@ -6,4 +6,4 @@ module%shared Project_name = Project_name
 let%server _ =
   Ocsigen_server.start
     [ Ocsigen_server.host
-        [Staticmod.run ~dir:"local/var/www/project_name" (); Eliom.run ()] ]
+        [Staticmod.run ~dir:"local/var/www/project_name" (); Eliom.App.run ()] ]
