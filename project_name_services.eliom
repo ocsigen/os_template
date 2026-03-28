@@ -30,4 +30,4 @@ let%client os_github_service = ~%os_github_service
 
 (* The OS lib needs access to the settings service to perform
    redirections to it. We need to register it *)
-let%server () = Os_services.register_settings_service settings_service
+let%server () = Os.Services.register_settings_service settings_service

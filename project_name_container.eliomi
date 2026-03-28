@@ -4,7 +4,7 @@
 (** This module defines the default template for application pages *)
 
 val%shared os_header :
-   ?user:Os_types.User.t
+   ?user:Os.Types.User.t
   -> unit
   -> [> `Header] Eliom_content.Html.F.elt Lwt.t
 (** [os_header ?user ()] defines the header for all pages. In this
@@ -18,18 +18,18 @@ val%shared connected_welcome_box :
   -> [> Html_types.div] Eliom_content.Html.F.elt Lwt.t
 
 val%shared get_user_data :
-   Os_types.User.id option
-  -> Os_types.User.t option Lwt.t
+   Os.Types.User.id option
+  -> Os.Types.User.t option Lwt.t
 
 val%shared page :
    ?html_a:Html_types.html_attrib Eliom_content.Html.attrib list
   -> ?a:Html_types.body_attrib Eliom_content.Html.attrib list
   -> ?title:string
   -> ?head:[< Html_types.head_content_fun] Eliom_content.Html.elt list
-  -> Os_types.User.id option
+  -> Os.Types.User.id option
   -> [< Html_types.div_content_fun > `Div] Eliom_content.Html.F.elt
        Eliom_content.Html.F.list_wrap
-  -> Os_page.content Lwt.t
+  -> Os.Page.content Lwt.t
 (** [page userid_o content] returns a page personalized for the user
     with id [myid_o] and with the content [content]. It adds a header,
     a footer, and a drawer menu.  If the user profile is not

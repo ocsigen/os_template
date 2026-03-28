@@ -47,7 +47,7 @@ let%client the_local_js = [] (* in index.html *)
 let%shared the_local_css = [[css_name]]
 
 module%shared Page_config = struct
-  include Os_page.Default_config
+  include Os.Page.Default_config
 
   let title = "project_name"
   let local_js = the_local_js
@@ -78,4 +78,4 @@ module%shared Page_config = struct
        else [p [txt "Error"]])
 end
 
-include%shared Os_page.Make (Page_config)
+include%shared Os.Page.Make (Page_config)

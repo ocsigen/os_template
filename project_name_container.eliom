@@ -4,7 +4,7 @@
 let%shared os_header ?user () =
   let open Eliom_content.Html.F in
   let%lwt user_box =
-    Os_user_view.user_box ~a_placeholder_email:[%i18n S.your_email]
+    Os.User_view.user_box ~a_placeholder_email:[%i18n S.your_email]
       ~a_placeholder_pwd:[%i18n S.your_password]
       ~text_keep_me_logged_in:[%i18n S.keep_logged_in]
       ~content_popup_forgotpwd:[%i18n S.recover_password ~capitalize:true]
@@ -18,7 +18,7 @@ let%shared os_header ?user () =
        ~a:[a_class ["os-page-header"]]
        [ a
            ~a:[a_class ["os-page-header-app-name"]]
-           ~service:Os_services.main_service
+           ~service:Os.Services.main_service
            [txt Project_name_base.displayed_app_name]
            ()
        ; user_box ])
@@ -39,7 +39,7 @@ let%shared os_footer () =
 let%rpc get_wrong_pdata () :
   ((string * string) * (string * string)) option Lwt.t
   =
-  Lwt.return @@ Eliom_reference.Volatile.get Os_msg.wrong_pdata
+  Lwt.return @@ Eliom_reference.Volatile.get Os.Msg.wrong_pdata
 
 let%shared connected_welcome_box () =
   let open Eliom_content.Html.F in
@@ -58,7 +58,7 @@ let%shared connected_welcome_box () =
   @@ div
        ~a:[a_class ["os-welcome-box"]]
        [ div [h2 [%i18n welcome ~capitalize:true]; info]
-       ; Os_user_view.information_form
+       ; Os.User_view.information_form
            ~a_placeholder_password:[%i18n S.password]
            ~a_placeholder_retype_password:[%i18n S.retype_password]
            ~a_placeholder_firstname:[%i18n S.your_first_name]
@@ -69,21 +69,21 @@ let%shared connected_welcome_box () =
 let%shared get_user_data = function
   | None -> Lwt.return_none
   | Some myid ->
-      let%lwt u = Os_user_proxy.get_data myid in
+      let%lwt u = Os.User_proxy.get_data myid in
       Lwt.return_some u
 
 let%shared page ?html_a ?a ?title ?head myid_o content =
   let%lwt me = get_user_data myid_o in
   let%lwt content =
     match me with
-    | Some me when not (Os_user.is_complete me) ->
+    | Some me when not (Os.User.is_complete me) ->
         let%lwt cwb = connected_welcome_box () in
         Lwt.return @@ (cwb :: content)
     | _ -> Lwt.return @@ content
   in
   let%lwt h = os_header ?user:me () in
   Lwt.return
-    (Os_page.content ?html_a ?a ?title ?head
+    (Os.Page.content ?html_a ?a ?title ?head
        [ h
        ; Eliom_content.Html.F.(div ~a:[a_class ["os-body"]] content)
        ; os_footer ()

@@ -27,7 +27,7 @@ let%shared page () =
         [%i18n
           Demo.links_and_forms_1
             ~t1:
-              [a ~service:Os_services.main_service [%i18n Demo.internal_link] ()]
+              [a ~service:Os.Services.main_service [%i18n Demo.internal_link] ()]
             ~t2:[a ~service:ocsigen_service [%i18n Demo.external_service] ()]]
     ; h2 [%i18n Demo.static_files]
     ; p

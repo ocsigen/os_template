@@ -11,11 +11,11 @@ let upload_user_avatar_handler myid () ((), (cropping, photo)) =
       (List.tl !Project_name_config.avatar_dir)
   in
   let%lwt avatar =
-    Os_uploader.record_image avatar_dir ~ratio:1. ?cropping photo
+    Os.Uploader.record_image avatar_dir ~ratio:1. ?cropping photo
   in
-  let%lwt user = Os_user.user_of_userid myid in
-  let old_avatar = Os_user.avatar_of_user user in
-  let%lwt () = Os_user.update_avatar ~userid:myid ~avatar in
+  let%lwt user = Os.User.user_of_userid myid in
+  let old_avatar = Os.User.avatar_of_user user in
+  let%lwt () = Os.User.update_avatar ~userid:myid ~avatar in
   match old_avatar with
   | None -> Lwt.return_unit
   | Some old_avatar -> Lwt_unix.unlink (Filename.concat avatar_dir old_avatar)
@@ -23,7 +23,7 @@ let upload_user_avatar_handler myid () ((), (cropping, photo)) =
 (* Set personal data *)
 
 let%server set_personal_data_handler =
-  Os_session.connected_fun Os_handlers.set_personal_data_handler
+  Os.Session.connected_fun Os.Handlers.set_personal_data_handler
 
 let%rpc set_personal_data_rpc (data : (string * string) * (string * string)) :
   unit Lwt.t
@@ -35,7 +35,7 @@ let%client set_personal_data_handler () = set_personal_data_rpc
 (* Forgot password *)
 
 let%server forgot_password_handler =
-  Os_handlers.forgot_password_handler Project_name_services.settings_service
+  Os.Handlers.forgot_password_handler Project_name_services.settings_service
 
 let%rpc forgot_password_rpc (email : string) : unit Lwt.t =
   forgot_password_handler () email
@@ -49,23 +49,23 @@ let%client forgot_password_handler () = forgot_password_rpc
 let%shared action_link_handler myid_o akey () =
   (* We try first the default actions (activation link, reset
      password) *)
-  try%lwt Os_handlers.action_link_handler myid_o akey () with
-  | Os_handlers.No_such_resource | Os_handlers.Invalid_action_key _ ->
-      Os_msg.msg ~level:`Err ~onload:true [%i18n S.invalid_action_key];
+  try%lwt Os.Handlers.action_link_handler myid_o akey () with
+  | Os.Handlers.No_such_resource | Os.Handlers.Invalid_action_key _ ->
+      Os.Msg.msg ~level:`Err ~onload:true [%i18n S.invalid_action_key];
       Eliom_registration.(appl_self_redirect Action.send) ()
   | e ->
       let%lwt email, phantom_user =
         match e with
-        | Os_handlers.Account_already_activated_unconnected
-            { Os_types.Action_link_key.userid = _
+        | Os.Handlers.Account_already_activated_unconnected
+            { Os.Types.Action_link_key.userid = _
             ; email
             ; validity = _
             ; action = _
             ; data = _
             ; autoconnect = _ } ->
             Lwt.return (email, false)
-        | Os_handlers.Custom_action_link
-            ( { Os_types.Action_link_key.userid = _
+        | Os.Handlers.Custom_action_link
+            ( { Os.Types.Action_link_key.userid = _
               ; email
               ; validity = _
               ; action = _
@@ -91,24 +91,24 @@ let%shared action_link_handler myid_o akey () =
           let page =
             [ div
                 ~a:[a_class ["login-signup-box"]]
-                [ Os_user_view.sign_up_form
+                [ Os.User_view.sign_up_form
                     ~a_placeholder_email:[%i18n S.your_email]
                     ~text:[%i18n S.sign_up] ~email () ] ]
           in
           Project_name_base.App.send
-            (Project_name_page.make_page (Os_page.content page))
+            (Project_name_page.make_page (Os.Page.content page))
         else
           let page =
             [ div
                 ~a:[a_class ["login-signup-box"]]
-                [ Os_user_view.connect_form
+                [ Os.User_view.connect_form
                     ~a_placeholder_email:[%i18n S.your_email]
                     ~a_placeholder_pwd:[%i18n S.your_password]
                     ~text_keep_me_logged_in:[%i18n S.keep_logged_in]
                     ~text_sign_in:[%i18n S.sign_in] ~email () ] ]
           in
           Project_name_base.App.send
-            (Project_name_page.make_page (Os_page.content page))
+            (Project_name_page.make_page (Os.Page.content page))
       else
         (*VVV In that case we must do something more complex. Check
                whether myid = userid and ask the user what he wants to
@@ -120,17 +120,17 @@ let%shared action_link_handler myid_o akey () =
 (* Set password *)
 
 let%server set_password_handler =
-  Os_session.connected_fun (fun myid () (pwd, pwd2) ->
-    let%lwt () = Os_handlers.set_password_handler myid () (pwd, pwd2) in
+  Os.Session.connected_fun (fun myid () (pwd, pwd2) ->
+    let%lwt () = Os.Handlers.set_password_handler myid () (pwd, pwd2) in
     Lwt.return (Eliom_registration.Redirection Eliom_service.reload_action))
 
 let%client set_password_handler () (pwd, pwd2) =
-  let%lwt () = Os_handlers.set_password_rpc (pwd, pwd2) in
+  let%lwt () = Os.Handlers.set_password_rpc (pwd, pwd2) in
   Lwt.return (Eliom_registration.Redirection Eliom_service.reload_action)
 
 (* Preregister *)
 
-let%server preregister_handler = Os_handlers.preregister_handler
+let%server preregister_handler = Os.Handlers.preregister_handler
 
 let%rpc preregister_rpc (email : string) : unit Lwt.t =
   preregister_handler () email
@@ -172,9 +172,9 @@ let%shared settings_handler myid_o () () =
   Project_name_container.page myid_o content
 
 let%server update_language_handler () language =
-  Os_session.connected_wrapper Project_name_language.update_language
+  Os.Session.connected_wrapper Project_name_language.update_language
     (Project_name_i18n.language_of_string language)
 
 let%client update_language_handler () language =
   Project_name_i18n.(set_language (language_of_string language));
-  Os_current_user.update_language language
+  Os.Current_user.update_language language

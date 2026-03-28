@@ -9,11 +9,11 @@ open%client Js_of_ocaml_lwt
    app) early on and subsequent requests from the client will contain
    the proper cookies.
 
-   The RPC only initializes Os_date by default, but you can add your
+   The RPC only initializes Os.Date by default, but you can add your
    own actions to be performed server side on first client request, if
    necessary. *)
 let%rpc init_request myid_o (tz : string) : unit Lwt.t =
-  ignore myid_o; Os_date.initialize tz; Lwt.return_unit
+  ignore myid_o; Os.Date.initialize tz; Lwt.return_unit
 
 let%client to_lwt f =
   let wait, wakeup = Lwt.wait () in
@@ -41,13 +41,13 @@ let%client change_page_uri uri =
   change_page_gen (fun () -> Eliom_client.change_page_uri uri)
 
 let%client handle_initial_url () =
-  let tz = Os_date.user_tz () in
+  let tz = Os.Date.user_tz () in
   let%lwt () = init_request tz in
   let%lwt () = ondeviceready in
   app_started := true;
   match !initial_change_page with
   | None ->
-      Eliom_client.change_page ~replace:true ~service:Os_services.main_service
+      Eliom_client.change_page ~replace:true ~service:Os.Services.main_service
         () ()
   | Some action -> action ()
 
@@ -57,7 +57,7 @@ let%client () =
   then (
     (* Initialize the application server-side; there should be a
        single initial request for that. *)
-    Os_date.disable_auto_init ();
+    Os.Date.disable_auto_init ();
     let%lwt _ = Lwt_js_events.onload () in
     handle_initial_url ())
   else Lwt.return_unit

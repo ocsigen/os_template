@@ -8,7 +8,7 @@ let%shared displayed_app_name = "project_name"
 
 (* Database initialization *)
 let () =
-  Os_db.init
+  Os.Db.init
     ?host:!Project_name_config.os_db_host
     ?port:!Project_name_config.os_db_port
     ?user:!Project_name_config.os_db_user
@@ -17,8 +17,8 @@ let () =
     ?unix_domain_socket_dir:!Project_name_config.os_db_unix_domain_socket_dir
     ()
 
-let () = Os_email.set_mailer "/usr/sbin/sendmail"
-let () = Os_email.set_from_addr ("project_name team", "noreply@DEFAULT.DEFAULT")
+let () = Os.Email.set_mailer "/usr/sbin/sendmail"
+let () = Os.Email.set_from_addr ("project_name team", "noreply@DEFAULT.DEFAULT")
 
 (* Create a module for the application. See
    https://ocsigen.org/eliom/manual/clientserver-applications for more
