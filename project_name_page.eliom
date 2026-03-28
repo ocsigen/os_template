@@ -33,7 +33,7 @@ let%client wasm_name_script = []
 let%server app_js () =
   if
     wasm_name <> ""
-    && (Eliom.Request_info.get_sitedata ()).Eliom.Eliom_common.enable_wasm
+    && (Eliom.Request_info.get_sitedata ()).Eliom.Common.enable_wasm
   then
     (* Use WASM detection script with hashed filenames *)
     let app_name = !Project_name_config.app_name in
