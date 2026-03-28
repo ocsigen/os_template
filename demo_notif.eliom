@@ -38,7 +38,7 @@ let%rpc listen () : unit Lwt.t = Notif.listen (); Lwt.return_unit
    happens. *)
 let%server () =
   Os.Session.on_start_process (fun _ ->
-    let e : (unit * string) Eliom.React.Down.t = Notif.client_ev () in
+    let e : (unit * string) Eliom.Eliom_react.Down.t = Notif.client_ev () in
     ignore
       [%client
         (Eliom.Lib.Dom_reference.retain Js_of_ocaml.Dom_html.window
