@@ -11,7 +11,7 @@ let%shared page () =
         [%i18n
           Demo.cache_2
             ~eliom_cscache:[code [txt "Eliom_cscache"]]
-            ~os_user_proxy:[code [txt "Os_user_proxy"]]]
+            ~os_user_proxy:[code [txt "Os.User_proxy"]]]
     ; p [%i18n Demo.cache_3 ~eliom_cscache:[code [txt "Eliom_cscache"]]]
     ; p [%i18n Demo.cache_4 ~eliom_cscache:[code [txt "Eliom_cscache"]]] ]
 

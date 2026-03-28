@@ -13,7 +13,7 @@ let%shared user_menu () =
       [%i18n S.settings ~capitalize:true]
       Project_name_services.settings_service
   ; Eliom_content.Html.F.li
-      [ Os_user_view.disconnect_link
+      [ Os.User_view.disconnect_link
           ~text_logout:[%i18n S.logout ~capitalize:true]
           ~a:[a_class ["os-drawer-item"]]
           () ] ]
@@ -21,7 +21,7 @@ let%shared user_menu () =
 let%shared make ?user () =
   let items = if user = None then [] else user_menu () in
   let items =
-    item [%i18n S.home ~capitalize:true] Os_services.main_service
+    item [%i18n S.home ~capitalize:true] Os.Services.main_service
     :: item [%i18n S.about ~capitalize:true] Project_name_services.about_service
     :: Demo_tools.drawer_contents ()
     :: items
@@ -31,7 +31,7 @@ let%shared make ?user () =
     match user with
     | None -> [menu]
     | Some user ->
-        let user_box = Os_user_view.connected_user_box ~user in
+        let user_box = Os.User_view.connected_user_box ~user in
         [user_box; menu]
   in
   let drawer, _, _ = Ot.Drawer.drawer contents in

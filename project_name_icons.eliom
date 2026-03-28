@@ -34,5 +34,5 @@ end
 module%shared F = Make (Eliom_content.Html.F)
 module%shared D = Make (Eliom_content.Html.D)
 
-(* Register this module for use by Os_icon. *)
-module%shared Empty = Os_icons.Register (F) (D)
+(* Register this module for use by Os.Icon. *)
+module%shared Empty = Os.Icons.Register (F) (D)

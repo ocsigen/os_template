@@ -14,7 +14,7 @@ let%shared update_main_email_button email =
       (Lwt.async (fun () ->
          Lwt_js_events.clicks (Eliom_content.Html.To_dom.of_element ~%button)
            (fun _ _ ->
-              let%lwt () = Os_current_user.update_main_email ~%email in
+              let%lwt () = Os.Current_user.update_main_email ~%email in
               Eliom_client.change_page
                 ~service:Project_name_services.settings_service () ()))
        : unit)];
@@ -33,7 +33,7 @@ let%shared delete_email_button email =
       (Lwt.async (fun () ->
          Lwt_js_events.clicks (Eliom_content.Html.To_dom.of_element ~%button)
            (fun _ _ ->
-              let%lwt () = Os_current_user.remove_email_from_user ~%email in
+              let%lwt () = Os.Current_user.remove_email_from_user ~%email in
               Eliom_client.change_page
                 ~service:Project_name_services.settings_service () ()))
        : unit)];
@@ -87,12 +87,12 @@ let%shared ul_of_emails (main_email, emails) =
 
 (* List with information about emails *)
 let%rpc get_emails myid () : (string option * (string * bool) list) Lwt.t =
-  let%lwt main_email = Os_db.User.email_of_userid myid in
-  let%lwt emails = Os_db.User.emails_of_userid myid in
+  let%lwt main_email = Os.Db.User.email_of_userid myid in
+  let%lwt emails = Os.Db.User.emails_of_userid myid in
   let%lwt emails =
     Lwt_list.map_s
       (fun email ->
-         let%lwt v = Os_current_user.is_email_validated email in
+         let%lwt v = Os.Current_user.is_email_validated email in
          Lwt.return (email, v))
       emails
   in
@@ -129,27 +129,27 @@ let%shared settings_content () =
        [ div
            ~a:[a_class ["os-settings"]]
            [ p [%i18n change_password ~capitalize:true]
-           ; Os_user_view.password_form ~a_placeholder_pwd:[%i18n S.password]
+           ; Os.User_view.password_form ~a_placeholder_pwd:[%i18n S.password]
                ~a_placeholder_confirmation:[%i18n S.retype_password]
                ~text_send_button:[%i18n S.send]
-               ~service:Os_services.set_password_service ()
+               ~service:Os.Services.set_password_service ()
            ; br ()
-           ; Os_user_view.upload_pic_link
+           ; Os.User_view.upload_pic_link
                ~submit:([a_class ["button"]], [txt "Submit"])
                ~content:[%i18n change_profile_picture]
                Project_name_services.upload_user_avatar_service
            ; br ()
-           ; Os_user_view.reset_tips_link
+           ; Os.User_view.reset_tips_link
                ~text_link:[%i18n S.see_help_again_from_beginning] ()
            ; br ()
-           ; Os_user_view.disconnect_all_link
+           ; Os.User_view.disconnect_all_link
                ~text_link:[%i18n S.disconnect_all] ()
            ; br ()
            ; p [%i18n link_new_email]
-           ; Os_user_view.generic_email_form
+           ; Os.User_view.generic_email_form
                ~a_placeholder_email:[%i18n S.email_address] ~text:[%i18n S.send]
-               ~service:Os_services.add_email_service ()
+               ~service:Os.Services.add_email_service ()
            ; p [%i18n currently_registered_emails]
            ; div ~a:[a_class ["os-emails"]] [emails]
-           ; Form.post_form ~service:Os_services.update_language_service
+           ; Form.post_form ~service:Os.Services.update_language_service
                select_language_form () ] ]
