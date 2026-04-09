@@ -2,9 +2,8 @@
    Feel free to use it, modify it, and redistribute it as you wish. *)
 open%shared Eliom.Content.Html.F
 
-module%client Ocsigen_config = struct
-  let get_debugmode () = false
-end
+let%server debugmode () = Ocsigen.Config.get_debugmode ()
+let%client debugmode () = false
 
 let%server css_name = !Project_name_config.css_name
 
@@ -67,13 +66,13 @@ module%shared Page_config = struct
 
   let default_error_page _ _ exn =
     Project_name_container.page None
-      (if Ocsigen_config.get_debugmode ()
+      (if debugmode ()
        then [p [txt (Printexc.to_string exn)]]
        else [p [txt "Error"]])
 
   let default_connected_error_page myid_o _ _ exn =
     Project_name_container.page myid_o
-      (if Ocsigen_config.get_debugmode ()
+      (if debugmode ()
        then [p [txt (Printexc.to_string exn)]]
        else [p [txt "Error"]])
 end
