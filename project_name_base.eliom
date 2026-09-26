@@ -3,12 +3,12 @@
 
 let%server () = Project_name_static_config.set_static_config ()
 let%server application_name = !Project_name_config.app_name
-let%client application_name = Eliom_client.get_application_name ()
+let%client application_name = Eliom.Client.get_application_name ()
 let%shared displayed_app_name = "project_name"
 
 (* Database initialization *)
 let () =
-  Os_db.init
+  Os.Db.init
     ?host:!Project_name_config.os_db_host
     ?port:!Project_name_config.os_db_port
     ?user:!Project_name_config.os_db_user
@@ -17,13 +17,13 @@ let () =
     ?unix_domain_socket_dir:!Project_name_config.os_db_unix_domain_socket_dir
     ()
 
-let () = Os_email.set_mailer "/usr/sbin/sendmail"
-let () = Os_email.set_from_addr ("project_name team", "noreply@DEFAULT.DEFAULT")
+let () = Os.Email.set_mailer "/usr/sbin/sendmail"
+let () = Os.Email.set_from_addr ("project_name team", "noreply@DEFAULT.DEFAULT")
 
 (* Create a module for the application. See
    https://ocsigen.org/eliom/manual/clientserver-applications for more
    information. *)
-module%shared App = Eliom_registration.App (struct
+module%shared App = Eliom.Registration.App (struct
     let application_name = application_name
     let global_data_path = Some ["__global_data__"]
   end)
@@ -31,4 +31,4 @@ module%shared App = Eliom_registration.App (struct
 (* As the headers (stylesheets, etc) won't change, we ask Eliom not to
    update the <head> of the page when changing page. (This also avoids
    blinking when changing page in iOS). *)
-let%client _ = Eliom_client.persist_document_head ()
+let%client _ = Eliom.Client.persist_document_head ()
