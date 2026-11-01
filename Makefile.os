@@ -212,6 +212,8 @@ config-files: | $(TEST_PREFIX)$(ELIOMSTATICDIR)
 	  if [ -d $(CLIENT_WASM_ASSETS) ]; then \
 	    cp -rf $(CLIENT_WASM_ASSETS) $(TEST_PREFIX)$(ELIOMSTATICDIR)/; \
 	  fi; \
+	else \
+	  rm -f $(JS_PREFIX).wasm.js; \
 	fi
 	$(MAKE) $(CONFIG_FILES) $(TEST_CONFIG_FILES) PROJECT_NAME=$(PROJECT_NAME)
 
