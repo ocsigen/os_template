@@ -28,4 +28,12 @@ let%server set_static_config () =
         (Unix.readlink "local/var/www/project_name/project_name.js") ".js" ;
     Project_name_config.css_name :=
       Unix.readlink "local/var/www/project_name/css/project_name.css";
+    (* As <wasm> in the configuration file: the page loads the WASM version
+       of the client program in the browsers that support it, and the
+       JavaScript version in the others. There is no link without WASM
+       (USE_WASM in Makefile.options). *)
+    Project_name_config.wasm_name :=
+      (try Unix.readlink "local/var/www/project_name/project_name.wasm.js"
+       with Unix.Unix_error (Unix.ENOENT, _, _) -> "");
+    Eliom.Config.set_enable_wasm (!Project_name_config.wasm_name <> "");
   end
