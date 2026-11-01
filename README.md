@@ -42,7 +42,7 @@ make test.static.byte (or test.static.opt)
 ```
 
 Then connect to `http://localhost:8080` to see the running app skeleton.
-Registration will work only if sendmail if configured on your system.
+Registration will work only if sendmail is configured on your system.
 But the default template will print the activation link on the standard
 output to make it possible for you to create your first users (remove this!).
 
