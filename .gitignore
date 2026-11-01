@@ -19,5 +19,9 @@ cordova
 static/defaultcss/project_name.css.map
 static/defaultcss/project_name.css
 
+# Copies of the Ocsigen Toolkit CSS
+static/css/ot_*.css
+static/css/.import-external-css
+
 # Dune
 _build
