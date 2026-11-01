@@ -16,8 +16,8 @@ cordova
 # Style
 .sass-cache
 
-static/css/project_name.css.map
-static/css/project_name.css
+static/defaultcss/project_name.css.map
+static/defaultcss/project_name.css
 
 # Dune
 _build

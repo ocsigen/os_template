@@ -126,5 +126,5 @@ endif
 	touch $(LOCAL_STATIC_CSS)/.import-external-css
 
 clean-style:
-	$(RM) $(LOCAL_CSS) $(LOCAL_STATIC_CSS)/$(PROJECT_NAME).css.map
+	$(RM) $(LOCAL_CSS) $(LOCAL_CSS).map
 	$(RM) -r .sass-cache
