@@ -23,14 +23,16 @@ let debug = false
  *)
 let log =
   if debug
-  then (fun s ->
-    Js_of_ocaml.Console.console##log (Js_of_ocaml.Js.string s);
-    let p = Js_of_ocaml.Dom_html.createP Js_of_ocaml.Dom_html.document in
-    p##.style##.color := Js_of_ocaml.Js.string "#64b5f6";
-    Js_of_ocaml.Dom.appendChild p
-      (Js_of_ocaml.Dom_html.document##createTextNode (Js_of_ocaml.Js.string s));
-    let container = Js_of_ocaml.Dom_html.getElementById "app-container" in
-    Js_of_ocaml.Dom.appendChild container p)
+  then (
+    fun s ->
+      Js_of_ocaml.Console.console##log (Js_of_ocaml.Js.string s);
+      let p = Js_of_ocaml.Dom_html.createP Js_of_ocaml.Dom_html.document in
+      p##.style##.color := Js_of_ocaml.Js.string "#64b5f6";
+      Js_of_ocaml.Dom.appendChild p
+        (Js_of_ocaml.Dom_html.document##createTextNode
+           (Js_of_ocaml.Js.string s));
+      let container = Js_of_ocaml.Dom_html.getElementById "app-container" in
+      Js_of_ocaml.Dom.appendChild container p)
   else fun s -> ()
 
 (* Reference used by the binding to fetchUpdate to know if update has been done

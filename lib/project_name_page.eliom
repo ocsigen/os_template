@@ -4,7 +4,6 @@ open%shared Eliom.Content.Html.F
 
 let%server debugmode () = Ocsigen.Config.get_debugmode ()
 let%client debugmode () = false
-
 let%server css_name = !Project_name_config.css_name
 
 let%client css_name =
