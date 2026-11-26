@@ -30,14 +30,16 @@ let%shared () =
     (Os.Session.Opt.connected_fun Project_name_handlers.action_link_handler);
   Eliom.Registration.Action.register ~service:Os.Services.add_email_service
     (fun () email ->
-       let%lwt () = Os.Handlers.add_email_handler () email in
-       add_email_notif (); Lwt.return_unit);
+      let%lwt () = Os.Handlers.add_email_handler () email in
+      add_email_notif (); Lwt.return_unit
+  );
   Eliom.Registration.Action.register
     ~service:Os.Services.update_language_service
     Project_name_handlers.update_language_handler;
   Project_name_base.App.register ~service:Os.Services.main_service
     (Project_name_page.Opt.connected_page
-       Project_name_handlers.main_service_handler);
+       Project_name_handlers.main_service_handler
+    );
   Project_name_base.App.register ~service:Project_name_services.about_service
     (Project_name_page.Opt.connected_page Project_name_handlers.about_handler);
   Project_name_base.App.register ~service:Project_name_services.settings_service
@@ -58,12 +60,14 @@ let%server () =
         let%lwt page =
           Project_name_page.Opt.connected_page
             (fun myid_o () () ->
-               Project_name_container.page myid_o
-                 [Eliom.Content.Html.F.p [%i18n page_not_found]])
+              Project_name_container.page myid_o
+                [Eliom.Content.Html.F.p [%i18n page_not_found]]
+            )
             () ()
         in
         Project_name_base.App.send ~code:404 page
-    | e -> Lwt.fail e)
+    | e -> Lwt.fail e
+  )
 
 (* Print more debugging information when <debugmode/> is in config file
    (DEBUG = yes in Makefile.options).
@@ -79,19 +83,22 @@ let%server _ =
   then (
     ignore
       [%client
-        ((* Eliom.Config.debug_timings := true; *)
-         Logs.set_level (Some Logs.Debug)
-         : unit)];
+        ( (* Eliom.Config.debug_timings := true; *)
+          Logs.set_level (Some Logs.Debug)
+          : unit
+        )];
     (* Enable Debug level only for ocsigenserver, eliom and project_name logs *)
     Logs.Src.list ()
     |> List.iter (fun src ->
-      let name = Logs.Src.name src in
-      if
-        String.starts_with ~prefix:"ocsigenserver" name
-        || String.starts_with ~prefix:"eliom" name
-        || String.starts_with ~prefix:"project_name" name
-        || String.starts_with ~prefix:"Project_name" name
-      then Logs.Src.set_level src (Some Logs.Debug)))
+        let name = Logs.Src.name src in
+        if
+          String.starts_with ~prefix:"ocsigenserver" name
+          || String.starts_with ~prefix:"eliom" name
+          || String.starts_with ~prefix:"project_name" name
+          || String.starts_with ~prefix:"Project_name" name
+        then Logs.Src.set_level src (Some Logs.Debug)
+    )
+  )
 
 (* The modules below are all the modules that needs to be explicitely
    linked-in. *)
