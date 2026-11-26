@@ -30,7 +30,9 @@ let%shared page () =
           Demo.tips4
             ~set_page:
               [ a ~service:Project_name_services.settings_service
-                  [%i18n Demo.tips5] () ]] ]
+                  [%i18n Demo.tips5] ()
+              ]]
+    ]
 
 (* Service registration is done on both sides (shared section),
    so that pages can be generated from the server
@@ -40,4 +42,5 @@ let%shared () =
   Project_name_base.App.register ~service:Demo_services.demo_tips
     ( Project_name_page.Opt.connected_page @@ fun myid_o () () ->
       let%lwt p = page () in
-      Project_name_container.page ~a:[a_class ["os-page-demo-tips"]] myid_o p )
+      Project_name_container.page ~a:[a_class ["os-page-demo-tips"]] myid_o p
+    )
